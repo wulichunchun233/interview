@@ -30,3 +30,29 @@
 ../..
 
 ## 2.Linux 命令
+
+Linux 中最重要的内容便是Linux命令，想要掌握好 linux 的话必须熟记一些常用的 Linux 命令。
+
+Linux 命令的基本格式为：
+
+**command [-options] [parameter]**
+
+- command：命令名称
+- options：命令所支持的选项
+- parameter：执行命令时传递的参数
+
+查看Linux命令的方法：
+
+1. --help
+
+一般常见的Linux命令都自带了帮助信息，只需要在命令的后面加入 --help即可以查看
+
+2. man
+
+man是 Linux 中提供的一个手册，包含绝大部分的命令，函数使用说明
+
+### 常用的一些 Linux 命令
+
+#### ls
+
+ls 是显示当前路径下的文件以及文件夹的名称的命令
