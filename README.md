@@ -1,5 +1,9 @@
 # python 后端开发面试知识点总结
 
-## Linux 知识
+## Linux
 
-- [linux](/docs/notes/linux/linux.md)
+- [linux基础知识](/docs/notes/linux/linux.md)
+
+## python
+
+- [python知识点](/docs/notes/python/python.md)
