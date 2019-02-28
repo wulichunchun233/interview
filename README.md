@@ -11,6 +11,7 @@
 
 - [python](/docs/notes/python/python.md)
 - [java](/docs/notes/java/java.md)
+- [C/C++]()
 
 ## 数学
 
