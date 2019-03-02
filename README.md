@@ -3,6 +3,7 @@
 ## 算法
 
 - [LeetCode](/docs/notes/algorithm/leetcode.md)
+
 ## Linux
 
 - [linux基础知识](/docs/notes/linux/linux.md)
