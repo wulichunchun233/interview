@@ -2,16 +2,16 @@
 
 目录：
 
-- [一、数据类型](/docs/notes/java/java.md#一、数据类型)
-    - [基本类型](/docs/notes/java/java.md#基本类型)
-    - [包装类型](/docs/notes/java/java.md#包装类型)
-    - [缓冲池](/docs/notes/java/java.md#缓冲池)
-- [二、String](/docs/notes/java/java.md#二、String)
-    - [简介](/docs/notes/java/java.md#简介)
-    - [String是不可变类型](/docs/notes/java/java.md#String 是不可变类型)
-    - [String、StringBuffer、StringBuilder](/docs/notes/java/java.md#String，StringBuffer and StringBuilder)
-    - [StringPool](/docs/notes/java/java.md#String Pool)
-    - [newString("abc")](/docs/notes/java/java.md#new String("abc"))
+- [一、数据类型](/docs/notes/Java/java.md#一、数据类型)
+    - [基本类型](/docs/notes/Java/java.md#基本类型)
+    - [包装类型](/docs/notes/Java/java.md#包装类型)
+    - [缓冲池](/docs/notes/Java/java.md#缓冲池)
+- [二、String](/docs/notes/Java/java.md#二、String)
+    - [简介](/docs/notes/Java/java.md#简介)
+    - [不可变类型](/docs/notes/Java/java.md#String是不可变类型)
+    - [String、StringBuffer、StringBuilder](/docs/notes/Java/java.md#StringStringBufferStringBuilder)
+    - [StringPool](/docs/notes/Java/java.md#StringPool)
+    - [newString("abc")](/docs/notes/Java/java.md#newString("abc"))
 ---
 ## 一、数据类型
 ---
