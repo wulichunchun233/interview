@@ -8,10 +8,10 @@
     - [缓冲池](/docs/notes/java/java.md#缓冲池)
 - [二、String](/docs/notes/java/java.md#二、String)
     - [简介](/docs/notes/java/java.md#简介)
-    - [String 是不可变类型](/docs/notes/java/java.md#String 是不可变类型)
-    - [String，StringBuffer and StringBuilder](/docs/notes/java/java.md#String，StringBuffer and StringBuilder)
-    - [String Pool](/docs/notes/java/java.md#String Pool)
-    - [new String("abc")](/docs/notes/java/java.md#new String("abc"))
+    - [String是不可变类型](/docs/notes/java/java.md#String 是不可变类型)
+    - [String、StringBuffer、StringBuilder](/docs/notes/java/java.md#String，StringBuffer and StringBuilder)
+    - [StringPool](/docs/notes/java/java.md#String Pool)
+    - [newString("abc")](/docs/notes/java/java.md#new String("abc"))
 ---
 ## 一、数据类型
 ---

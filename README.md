@@ -11,7 +11,7 @@
 ## 语言
 
 - [python](/docs/notes/python/python.md)
-- [java](/docs/notes/java/java.md)
+- [java](/docs/notes/Java/java.md)
 - [C/C++]()
 
 ## 数学
