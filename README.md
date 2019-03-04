@@ -23,6 +23,8 @@
 
 ## 数据结构
 
+-[数组和字符串](/docs/notes/data_structure/array.md)
+
 ## 计算机网络
 
 ## 数据库
