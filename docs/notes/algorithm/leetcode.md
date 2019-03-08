@@ -58,3 +58,4 @@
 - [LeetCode 387.字符串中的第一个唯一字符](https://wangxin1248.github.io/algorithm/2018/11/leetcode-387.html)
 - [LeetCode 412. Fizz Buzz](https://wangxin1248.github.io/algorithm/2018/12/leetcode-412.html)
 - [LeetCode 461. 汉明距离](https://wangxin1248.github.io/algorithm/2019/01/leetcode-461.html)
+- [LeetCode 887. 鸡蛋掉落](https://wangxin1248.github.io/algorithm/2019/03/leetcode-887.html)
