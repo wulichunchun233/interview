@@ -3,6 +3,7 @@
 ## 算法
 
 - [LeetCode](/docs/notes/algorithm/leetcode.md)
+- [NowCoder](/docs/notes/algorithm/nowcoder.md)
 
 ## Linux
 
