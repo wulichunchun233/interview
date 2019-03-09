@@ -12,7 +12,7 @@
 
 - [python](/docs/notes/python/python.md)
 - [java](/docs/notes/Java/java.md)
-- [C/C++]()
+- [C/C++](/docs/notes/c++/c++.md)
 
 ## 数学
 
@@ -24,7 +24,7 @@
 
 ## 数据结构
 
--[数组和字符串](/docs/notes/data_structure/array.md)
+- [数组和字符串](/docs/notes/data_structure/array.md)
 
 ## 计算机网络
 
