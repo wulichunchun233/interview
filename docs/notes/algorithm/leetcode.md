@@ -33,6 +33,7 @@
 - [LeetCode 121. 买卖股票的最佳时机](https://wangxin1248.github.io/algorithm/2018/12/leetcode-121.html)
 - [LeetCode 122.买卖股票的最佳时机 II](https://wangxin1248.github.io/algorithm/2018/10/leetcode-122.html)
 - [LeetCode 125.验证回文串](https://wangxin1248.github.io/algorithm/2018/11/leetcode-125.html)
+- [LeetCode 131.分割回文串](https://wangxin1248.github.io/algorithm/2019/03/leetcode-131.html)
 - [LeetCode 136.只出现一次的数字](https://wangxin1248.github.io/algorithm/2018/10/leetcode-136.html)
 - [LeetCode 141. 环形链表](https://wangxin1248.github.io/algorithm/2018/11/leetcode-141.html)
 - [LeetCode 155. 最小栈](https://wangxin1248.github.io/algorithm/2019/01/leetcode-155.html)
