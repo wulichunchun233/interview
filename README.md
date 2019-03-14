@@ -15,7 +15,10 @@
 
 - [python](/docs/notes/python/python.md)
 - [java](/docs/notes/Java/java.md)
-- [C/C++](/docs/notes/c++/c++.md)
+
+### c++
+- [C/C++](/docs/notes/c++/string和vector.md)
+- [C/C++](/docs/notes/c++/零散的知识点.md)
 
 ## 数学
 
