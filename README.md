@@ -17,8 +17,10 @@
 - [java](/docs/notes/Java/java.md)
 
 ### c++
-- [string、vector和数组](/docs/notes/c++/string和vector.md)
+
 - [零散的知识点](/docs/notes/c++/零散的知识点.md)
+- [string、vector和数组](/docs/notes/c++/string和vector.md)
+- [表达式](/docs/notes/c++/expression.md)
 
 ## 数学
 
