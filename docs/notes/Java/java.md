@@ -9,7 +9,7 @@
 - [二、String](/docs/notes/Java/java.md#二、String)
     - [简介](/docs/notes/Java/java.md#简介)
     - [不可变类型](/docs/notes/Java/java.md#String是不可变类型)
-    - [String、StringBuffer、StringBuilder](/docs/notes/Java/java.md#StringStringBufferStringBuilder)
+    - [String、StringBuffer、StringBuilder](/docs/notes/Java/java.md#String，StringBuffer and StringBuilder)
     - [StringPool](/docs/notes/Java/java.md#StringPool)
     - [newString("abc")](/docs/notes/Java/java.md#newString("abc"))
 ---
@@ -192,6 +192,8 @@ String 的不可变性天生具备线程安全，可以在多个线程中安全�
 - String 不可变，因此是线程安全的
 - StringBuffer 是线程安全的，内部使用 synchronized 进行同步
 - StringBuilder 不是线程安全的
+
+由于 StringBuilder 在速度上优于 StringBuffer，因此一般情况下都是直接使用 StringBuilder。除非要求线程安全的情况下才使用 StringBuffer。
 
 ### String Pool
 
