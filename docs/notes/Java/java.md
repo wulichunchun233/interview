@@ -9,7 +9,7 @@
 - [二、String](/docs/notes/Java/java.md#二、String)
     - [简介](/docs/notes/Java/java.md#简介)
     - [不可变类型](/docs/notes/Java/java.md#String是不可变类型)
-    - [String、StringBuffer、StringBuilder](/docs/notes/Java/java.md#String，StringBuffer and StringBuilder)
+    - [String、StringBuffer、StringBuilder](/docs/notes/Java/java.md#String，StringBuffer、StringBuilder)
     - [StringPool](/docs/notes/Java/java.md#StringPool)
     - [newString("abc")](/docs/notes/Java/java.md#newString("abc"))
 ---
@@ -178,7 +178,7 @@ String 经常作为函数中的参数，String 的不可变性可以保证参数
 
 String 的不可变性天生具备线程安全，可以在多个线程中安全使用。
 
-### String，StringBuffer and StringBuilder
+### String，StringBuffer、StringBuilder
 
 这几种类型的区别：
 
