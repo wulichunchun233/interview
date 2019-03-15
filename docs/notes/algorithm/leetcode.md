@@ -35,6 +35,7 @@
 - [LeetCode 125.验证回文串](https://wangxin1248.github.io/algorithm/2018/11/leetcode-125.html)
 - [LeetCode 131.分割回文串](https://wangxin1248.github.io/algorithm/2019/03/leetcode-131.html)
 - [LeetCode 136.只出现一次的数字](https://wangxin1248.github.io/algorithm/2018/10/leetcode-136.html)
+- [LeetCode 139. 单词拆分](https://wangxin1248.github.io/algorithm/2019/03/leetcode-139.html)
 - [LeetCode 141. 环形链表](https://wangxin1248.github.io/algorithm/2018/11/leetcode-141.html)
 - [LeetCode 155. 最小栈](https://wangxin1248.github.io/algorithm/2019/01/leetcode-155.html)
 - [LeetCode 169. 求众数](https://wangxin1248.github.io/algorithm/2019/02/leetcode-169.html)
