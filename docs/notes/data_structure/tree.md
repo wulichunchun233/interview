@@ -3,7 +3,7 @@
 在做leetcode时遇到的。
 Trie树又叫字典树、前缀树（Prefix Tree）、单词查找树或键树，是一种多叉树结构，如下图：
 
-![Trie树](/assets/images/data_structure/trie树.jpg)
+![Trie树](/assets/images/data_structure/trie_tree.jpg)
 
 上图是一棵trie树，表示了关键字集合{"a", "to", "tea", "ted", "ten", "i", "in", "inn"}, 从上图可以归纳出trie树的基本性质：
 
