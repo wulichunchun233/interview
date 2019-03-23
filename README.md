@@ -13,14 +13,14 @@
 
 ## 语言
 
-- [python](/docs/notes/python/python.md)
-- [java](/docs/notes/Java/java.md)
-
-### c++
-
-- [零散的知识点](/docs/notes/c++/零散的知识点.md)
-- [string、vector和数组](/docs/notes/c++/string和vector.md)
-- [表达式](/docs/notes/c++/expression.md)
+- python
+    - [python基础](/docs/notes/python/python.md)
+- Java
+    - [java基础](/docs/notes/Java/java基础.md)
+- c++
+    - [零散的知识点](/docs/notes/c++/零散的知识点.md)
+    - [string、vector和数组](/docs/notes/c++/string和vector.md)
+    - [表达式](/docs/notes/c++/expression.md)
 
 ## 数学
 
