@@ -18,7 +18,7 @@ eg：
 print('name is :%s,age is :%d'%(name,age))
 ```
 
-**python2 和 python3 中 input 输入you 和不同？**
+**python2 和 python3 中 input 输入有和不同？**
 
 - python2中input输入的是命令（变量），使用 raw_input 便与python3相同
 - python3中input输入的是字符串

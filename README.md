@@ -16,7 +16,7 @@
 - python
     - [python基础](/docs/notes/python/python_base.md)
 - Java
-    - [java基础](/docs/notes/Java/java_base.md)
+    - [java基础](/docs/notes/java/java_base.md)
 - c++
     - [零散的知识点](/docs/notes/c++/零散的知识点.md)
     - [string、vector和数组](/docs/notes/c++/string和vector.md)
