@@ -14,7 +14,7 @@
 ## 语言
 
 - python
-    - [python基础](/docs/notes/python/python.md)
+    - [python基础](/docs/notes/python/python基础.md)
 - Java
     - [java基础](/docs/notes/Java/java基础.md)
 - c++
