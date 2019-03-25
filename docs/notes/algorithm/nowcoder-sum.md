@@ -222,13 +222,13 @@ y=c∗10^(n/2)+d
 
 这里的n是数字的位数。如果是偶数，则a和b都是n/2位的。如果n是奇数，则你可以让a是n/2+1位，b是n/2位。（例如a = 12，b = 34；a = 123，b = 45），那么x*y就可以换算为：
 
-![分治法的步骤](/assets/images/nowcoder_sum/mulitiply_fenzhi.jpg)
+![分治法的步骤](/assets/images/nowcoder_sum/fenzhi_buzhou.jpg)
 
 注意最后一步，这个式子倒数第二步中的(ad + bc)，没必要另外进行两次乘法，可以使用((a+b)*(c+d) - ac - bd)来重复利用前面的两次乘积结果ac和bd。
 
 也就是说，我们发现最终只需要计算三次乘法 a*c， b*d， (a+b)*(c+d) 以及六次加法。因此这样复杂度就变为
 
-![时间复杂度](/assets/images/nowcoder_sum/fenzhi_buzhou.jpg)
+![时间复杂度](/assets/images/nowcoder_sum/fenzhi_time.jpg)
 
 对比之前的计算过程，结果已经呼之欲出了。这里唯一需要注意的两点就是：
 >
