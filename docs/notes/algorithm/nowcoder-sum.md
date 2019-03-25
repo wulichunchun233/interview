@@ -267,3 +267,112 @@ public static long karatsuba(long num1, long num2){
 *总结：*
 Karatsuba 算法是比较简单的递归乘法，把输入拆分成 2 部分，不过对于更大的数，可以把输入拆分成 3 部分甚至 4 部分。拆分为 3 部分时，可以使用下面的Toom-Cook 3-way 乘法，复杂度降低到 O(n^1.465)。拆分为 4 部分时，使用Toom-Cook 4-way 乘法，复杂度进一步下降到 O(n^1.404)。对于更大的数字，可以拆成 100 段，使用快速傅里叶变换FFT，复杂度接近线性，大约是 O(n^1.149)。可以看出，分割越大，时间复杂度就越低，但是所要计算的中间项以及合并最终结果的过程就会越复杂，开销会增加，因此分割点上升，对于公钥加密，暂时用不到太大的整数，所以使用 Karatsuba 就合适了，不用再去弄更复杂的递归乘法。
 
+----
+在牛客中通过的代码
+```
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+//移位进位法 （通过）
+string Mul(string left, string right)
+{
+
+    size_t Lsize = left.size();
+    size_t Rsize = right.size();
+    size_t Size = Lsize + Rsize;
+    string res(Size, '0');
+
+    int takevoer = 0;//进位
+    int offset = 0;//移位
+
+    size_t idx = 1, j = 1;
+    for ( idx = 1; idx <= Rsize; ++idx)
+    {   
+        takevoer = 0;
+        int rightnum = right[Rsize - idx] - '0';
+        //计算每一位与left相乘
+        for ( j = 1; j <= Lsize; ++j)
+        {       
+            char resBit = res[Size - j - offset] - '0';
+            int num = rightnum * (left[Lsize - j] - '0') + takevoer + resBit;
+            takevoer = num / 10;
+            res[Size - j - offset] = num % 10 + '0';    
+        }
+        if (takevoer != 0)
+            res[Size - j - offset] = takevoer + '0';
+        offset++;
+    }
+
+    //如果没有进位的话，res最高位没有数字
+    if (res[0] == '0')
+        res.erase(0,1);
+    return res;
+
+}
+
+//逐位相乘法 （通过了90%的测试用例）
+//将计算的整体结果保存res中，然后再考虑进位
+string Mul2(string left,string right)
+{
+    size_t lSize = left.size();
+    size_t Rsize = right.size();
+    size_t Size = lSize + Rsize;
+    vector<int> res(Size, 0);
+    /*int *res = new int[Size];
+    memset(res, 0, sizeof(int)* Size);*/
+
+
+    for (size_t i = 0; i < Rsize; ++i)
+    {
+        int rightnum = right[Rsize - i - 1] - '0';
+        for (size_t j = 0; j < lSize; ++j)
+        {
+            int num = rightnum * (left[lSize - j - 1] - '0');
+            //逆序存放
+            res[Size - 1 -(i + j)] += num;
+        }
+    }
+    //处理进位
+    int takeover = 0;
+    size_t idx = 0;
+    for (; idx < Size; ++idx)
+    {
+        int temp = res[Size - idx - 1] + takeover;
+        res[Size - idx - 1] = temp % 10;
+        takeover = temp / 10;
+    }
+    //进位没有处理完
+    while (takeover != 0)
+    {
+        res[Size - idx - 1] = takeover % 10 ;
+        takeover /= 10;
+    }
+
+    //处理返回结果
+    string result;
+    for (size_t index = 0; index < Size; ++index)
+    {
+        result += res[index] + '0';
+    }
+    //如果没有进位的话，res最高位没有数字
+    if (result[0] == 0)
+        result.erase(0, 1);
+
+    return result;
+}
+int main()
+{
+    string data;
+    getline(cin, data);
+    size_t pos = data.find(' ');
+    string left = data.substr(0, pos);
+    string right = data.substr(pos + 1);
+    string res = Mul(left, right);
+    cout << res << endl;
+    system("pause");
+    return 0;
+}
+```
+
