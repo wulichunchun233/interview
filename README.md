@@ -10,6 +10,7 @@
 ## Linux
 
 - [linux基础知识](/docs/notes/linux/linux.md)
+- [shell脚本编程](/docs/notes/linux/shell.md)
 
 ## 语言
 
@@ -23,8 +24,6 @@
     - [表达式](/docs/notes/c++/expression.md)
 
 ## 数学
-
-- [概率论]()
 
 ## 操作系统
 
