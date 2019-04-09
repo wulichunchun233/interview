@@ -6,6 +6,7 @@
 - [NowCoder](/docs/notes/algorithm/nowcoder.md)
 - [LeetCode-sunshine](/docs/notes/algorithm/leetcode-sum.md)
 - [NowCoder-sunshine](/docs/notes/algorithm/nowcoder-sum.md)
+- [huawei-108](/docs/notes/algorithm/huawei.md)
 
 ## Linux
 
