@@ -61,6 +61,7 @@
 - [LeetCode 326. 3的幂](https://wangxin1248.github.io/algorithm/2018/12/leetcode-326.html)
 - [LeetCode 334. 递增的三元子序列](https://wangxin1248.github.io/algorithm/2019/03/leetcode-334.html)
 - [LeetCode 344.反转字符串](https://wangxin1248.github.io/algorithm/2018/10/leetcode-344.html)
+- [LeetCode 347. 前K个高频元素](https://wangxin1248.github.io/algorithm/2019/04/leetcode-347.html)
 - [LeetCode 350.两个数组的交集 II](https://wangxin1248.github.io/algorithm/2018/10/leetcode-350.html)
 - [LeetCode 378. 有序矩阵中第K小的元素](https://wangxin1248.github.io/algorithm/2019/04/leetcode-378.html)
 - [LeetCode 384. 打乱数组](https://wangxin1248.github.io/algorithm/2018/12/leetcode-384.html)
