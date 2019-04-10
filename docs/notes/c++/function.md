@@ -45,8 +45,151 @@
 当初始化一个非引用类型的变量时，初始值被拷贝给变量。此时，对变量的改动不会影响初始值。
 
 **指针形参**
+
 指针的行为和其他非引用类型一样。当执行指针拷贝操作时
+
+#### 1.2.2 传引用参数
+
+#### 1.2.3 const形参和实参
+
+#### 1.2.4 数组形参
+
+```
+#include <iostream>
+#include <stdlib.h>
+#include <iterator>
+
+using namespace std;
+
+/* 使用标记指定数组长度（一般适用于C风格字符串）*/
+
+void printf_array(const char *cp) {
+	if (cp){
+		while (*cp){
+			cout << *cp;
+			cp++;
+		}
+	}
+}
+
+/* 使用标准规范库（begin()和end(),begin返回指向数组首元素的指针，end返回指向数组尾后元素的指针） */
+
+void printf_array2(const int *beg, const int *end)
+{
+	// 输出begin到end之间（不含end）的元素
+	while (beg != end) {
+		cout << *beg++ ;
+	}
+}
+
+/* 显示传递给一个表示数组大小的形参 */
+
+void printf_array3(const int ia[], size_t size){  // const int ia[] 等价于 const int* ia
+	for (size_t i = 0; i != size; ++i){
+		cout << ia[i];
+	}
+}
+
+
+/* 
+  数组引用形参 
+  &arr两端的括号必不可少
+  f(int &arr[10])    // 错误：将arr声明成了引用的数组
+  f(int (&arr)[10])  // 正确：arr是具有10个整数的整形数组的引用
+*/
+
+void printf_array4(int (&arr) [10]){  // 只能将函数作用于大小为10的数组，后面将使用模板，使其可以给引用类型的形参传递任意大小的数组
+	for (auto elem : arr)
+		cout << elem;
+}
+
+int main() {
+	char ca[] = { 'h','e','l','l','o',' ','w','o','r','l','d','\0' };
+
+	int ia[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+	printf_array(ca);
+
+	printf("\n");
+
+	printf_array2(begin(ia), end(ia));
+
+	printf("\n");
+
+	printf_array3(ia, end(ia) - begin(ia));
+
+	printf("\n");
+
+	printf_array4(ia);
+
+	system("pause");
+
+	return 0;
+
+}
+```
+
+**传递多维数组**
+
+实际上多维数组是数组的数组，和所有数组一样，当多维数组传递给函数时，真正传递的是指向数组首元素的指针。因为我们处理的是数组的数组，所以首元素本身就是一个数组，指针就是一个指向数组的指针。数组的第二维（以及后面所有维度）的大小都是数组类型的一部分，不能省略。
+
+```
+void printf(int (*matrix)[10], int rowSize)
+{
+	/*……*/
+}
+```
+
+*强调：*matirx两端的括号必不可少*
+``` 
+int *matirx[10];    // 10个指针构成的数组
+int (*matix)[10];   // 指向含有10个整数的数组的指针
+```
+#### 1.2.5 main：处理命令行选项
+
+```
+int main(int argc, char *argv[]) {……}
+
+int main(int argc, char **argv) {……}
+```
+以上两种方式都可以，第二个形参argv是一个数组，它的元素是指向C风格字符串的指针，第一个形参argc表示数组中字符串的数量。
+
+*记住：*可选的实参从argv[1]开始，argv[0]保存程序的名字，而非用户输入。
+
+#### 1.2.6 含有可变形参的函数
+
+有时我们无法提前预知应向函数传递几个实参，c++11新标准提供了两种主要的方法：如果所有的实参的类型相同，可以传递一个名为initializer_list的标准库类型；如果实参的类型不同，我们可以编写一种特殊的函数，也就是所谓的可变参数模板，这个后面学习。
+
+c++还有一种特殊的形参类型（即省略符），可以用它传递可变数量的实参，这一般只用于与C函数交互的接口程序。
+
+**initializer_list形参**
+
+initializer_list是一种标准库类型，用于表示某种特定类型的值的数组，它提供的操作如下：
+名称|功能
+-|-
+initializer_list<T> lst;|默认初始化：T类型元素的空列表
+initializer_list<T> lst{a,b,c,...};|lst的元素数量和初始值一样多；lst的元素是对应初始值的副本；列表中的元素是const
+lst2(lst) lst2 = lst|拷贝或赋值一个initializer_list对象不会拷贝列表中的元素；拷贝后，原始列表和副本共享元素
+lst.size()|列表中的元素数量
+lst.begin()|返回指向lst首元素的指针
+lst.end()|返回指向lst中尾元素的下一位置的指针
+
+和vector一样，initializer_list也是一种模板类型，定义initializer_list对象时，必须说明列表中所含元素的类型。
+
+和vector不一样的是，initializer_list对象中的元素永远是常量值，我们无法改变initializer_list对象中元素的值。
+
+**省略符形参**
+
+省略符形参只能出现在形参列表的最后一个位置，它的形式无外乎以下两种：
+```
+void foo(parm_list, ...);
+void foo(...);
+```
+
+
 ### 1.3 返回类型和return语句
+
+
 ### 1.4 函数重载
 ### 1.5 特殊用途语言特性
 ### 1.6 函数匹配
