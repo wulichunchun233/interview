@@ -571,8 +571,104 @@ int main() {
 }
 ```
 
-### 10、
+### 10、提取不重复的整数（33.47%）
 
 **10.1题目描述**
 
+输入一个int型整数，按照从右向左的阅读顺序，返回一个不含重复数字的新的整数。
+
+输入描述:
+输入一个int型整数
+
+输出描述:
+按照从右向左的阅读顺序，返回一个不含重复数字的新的整数
+
+示例1
+
+输入：9876673
+
+输出：37689
+
 **10.2解题**
+
+```
+#include <iostream>
+#include <set>
+
+using namespace std;
+
+int main() {
+    int num ;
+    int new_num = 0;
+    cin >> num;
+    
+    set<int> s;
+    
+    while (num) {
+        int n = num % 10;
+        int len = s.size();
+        s.insert(n);
+        if (len != s.size())
+            new_num = new_num*10 + n;
+        num /= 10;
+    }
+    
+    cout << new_num << endl;
+    
+    return 0;
+    
+}
+```
+### 11、字符个数统计（34.06%）
+
+**11.1题目描述**
+
+编写一个函数，计算字符串中含有的不同字符的个数。字符在ACSII码范围内(0~127)。不在范围内的不作统计。
+
+输入描述:
+输入N个字符，字符在ACSII码范围内。
+
+输出描述:
+输出范围在(0~127)字符的个数。
+
+示例1
+输入：abc
+输出：3
+
+**11.2解题**
+
+```<=  >=```号要写对，char可以直接和int型比较
+
+```
+#include <iostream>
+#include <string>
+#include <set>
+#include <stdlib.h>
+
+using namespace std;
+
+int main() {
+    string s;
+    while (cin >> s) {
+        int counts = 0;
+        set<char> sets;
+        for (int i=0; i<s.size(); ++i) {
+            int len = sets.size();
+            sets.insert(s[i]);
+            if (len != sets.size()) {
+                if ( (0 <= s[i]) && ( 127 >= s[i]))
+                    ++counts;
+            }
+        }
+        cout << counts << endl;
+    }
+    return 0;
+}
+```
+
+
+### 12、
+
+**12.1题目描述**
+
+**12.2解题**
