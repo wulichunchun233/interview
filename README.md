@@ -24,6 +24,7 @@
     - [string、vector和数组](/docs/notes/c++/string和vector.md)
     - [表达式](/docs/notes/c++/expression.md)
     - [函数](/docs/notes/c++/function.md)
+    - [类](/docs/notes/c++/class.md)
 
 ## 数学
 
