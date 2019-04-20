@@ -667,8 +667,129 @@ int main() {
 ```
 
 
-### 12、
+### 12、密码验证合格程序
 
 **12.1题目描述**
 
+密码要求:
+
+1.长度超过8位
+
+2.包括大小写字母.数字.其它符号,以上四种至少三种 
+
+3.不能有相同长度超2的子串重复
+
+说明:长度超过2的子串
+
+输入描述:
+一组或多组长度超过2的子符串。每组占一行
+
+输出描述:
+如果符合要求输出：OK，否则输出NG
+
+输入：
+
+021Abc9000
+021Abc9Abc1
+021ABC9000
+021$bc9000
+
+输出：
+
+OK
+NG
+NG
+OK
+
 **12.2解题**
+
+求解思路： 按照要求， 分别建立三个函数 check_lengh, check_char_kinds和check_substr_repeat。前两个函数难度不大，对于判断字符串内是否存在重复长度超二的子串，有两种解法：
+
+1. 暴力搜索： 从下标开始搜索，取出长度为3的子字符串，然后利用std::string.find()进行查找；
+
+2. 后缀数组方法：将字符串的子串 [i,n)存入vector容器suffix中，调用<algorithm>中的sort对子串按照字典序排列，遍历相邻子串suffix[i]与suffix[i+1]，求出其相同的字符数目，如果数目>2，即表示存在重复子串；
+
+```
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool check_length(const string &password) {
+    return password.size() > 8;
+}
+
+
+bool check_char_kinds(const string &password) {
+    int digit{0}, lowercase{0}, uppercase{0}, others{0};
+    
+    for(int i=0; i<password.size(); ++i) {
+        if( isdigit(password[i]) ){
+            digit = 1;
+            continue;
+        } else if( islower(password[i]) ){
+            lowercase = 1;
+            continue;
+        } else if( isupper(password[i]) ){
+            uppercase = 1;
+            continue;
+        } else {
+            others = 1;
+            continue;
+        }
+    }
+    return digit + lowercase + uppercase + others >= 3 ? true : false;
+}
+
+bool check_substr_repeat_1(const string &password) {
+    // simple search and match
+    for(int i=0; i<password.size() -3; ++i) {
+        string str1 = password.substr(i,3);
+        if( password.find(str1, i+1) != string::npos)  // ?
+            return false;
+    }
+    return true;
+}
+
+bool check_substr_repeat_2(const string &password) {
+    // 后缀数组法
+    vector<string> suffix(password.size());
+    for (int i=0; i<password.size() ; ++i){
+        suffix[i] = password.substr(i);
+    }
+    sort(suffix.begin(), suffix.end());
+    
+    for(int i=0; i<suffix.size()-1; ++i) {
+        int len = 0;
+        int max_len = max(suffix[i].size(), suffix[i+1].size());
+        int j = 0;
+        while ( j<max_len && suffix[i][j]==suffix[i+1][j] ) {
+            ++len;
+            ++j;
+            if (len > 2)
+                return false;
+        }
+    }
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    string ps;
+    while(cin >> ps){
+        if( check_length(ps) && check_char_kinds(ps) && check_substr_repeat_2(ps) )
+            cout << "OK" <<endl;
+        else 
+            cout << "NG" <<endl;
+    }
+    return 0;
+}
+```
+
+### 13、
+
+**13.1题目描述**
+
+**13.2解题**
