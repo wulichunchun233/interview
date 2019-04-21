@@ -10,7 +10,7 @@
 
 ## Linux
 
-- [linux基础知识](/docs/notes/linux/linux.md)
+- [linux系统知识](/docs/notes/linux/linux.md)
 - [shell脚本编程](/docs/notes/linux/shell.md)
 
 ## 语言
