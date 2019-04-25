@@ -73,7 +73,6 @@ int main() {
     return 0;
 }
 ```
-
 ### 3、字符串最后一个单词的长度（23.35% —— 字符串）
 
 **3.1 题目描述**
@@ -157,7 +156,6 @@ int main() {
     return 0;
 }
 ```
-
 ### 5、字符串分隔（21.87% —— 字符串）
 
 **5.1 题目描述**
@@ -381,7 +379,6 @@ int main() {
 }
 
 ```
-
 ### 7、质数因子（27.45% —— 排序）
 
 **7.1题目描述**
@@ -452,8 +449,6 @@ int main()
       }
 }
 ```
-
-
 ### 8、取近似值（44。25%）
 
 **8.1题目描述**
@@ -512,7 +507,6 @@ int main()
     return 0;
 }
 ```
-
 ### 9、合并表记录（29.69% —— 栈）
 
 **9.1题目描述**
@@ -570,7 +564,6 @@ int main() {
     return 0;
 }
 ```
-
 ### 10、提取不重复的整数（33.47%）
 
 **10.1题目描述**
@@ -665,8 +658,6 @@ int main() {
     return 0;
 }
 ```
-
-
 ### 12、密码验证合格程序
 
 **12.1题目描述**
@@ -787,9 +778,182 @@ int main() {
     return 0;
 }
 ```
-
-### 13、
+### 13、句子逆序（数组，27.04%）
 
 **13.1题目描述**
 
+将一个英文语句以单词为单位逆序排放。例如“I am a boy”，逆序排放后为“boy a am I”
+所有单词之间用一个空格隔开，语句中除了英文字母外，不再包含其他字符
+
+输入描述:
+将一个英文语句以单词为单位逆序排放。
+
+输出描述:
+得到逆序的句子
+
+示例1
+输入：I am a boy
+输出：boy a am I
+
 **13.2解题**
+
+res存储当前字符串，每次把剥离出来的单词tmp加在res前面。
+
+方法是简单，但效率较低。1：每个字符串都会进行判断，而判断只是为了区分第一个。2：res向后复制，string会多次进行内存重新分配。
+```
+#include <iostream>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+int main() {
+    string s;
+    getline(cin, s);
+    stringstream ss(s);
+    string res="", tmp;
+    while (ss >> tmp) {
+        if(res == "")
+            res = tmp;
+        else
+            res = tmp + " " + res;
+    }
+    cout << res;
+    return 0;
+}
+
+```
+
+下面这个方法是直接逆序输出
+```
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string s;
+    while (getline(cin,s)){
+        string tmp;
+        for(int i=s.size()-1; i>=0; --i) {    
+            if (s[i]!=' ')
+                tmp = s[i] + tmp;
+            else {
+                cout << tmp << ' ';
+                tmp.clear();
+            }
+        }
+        cout << tmp << endl; // 这句要输出最后一个tmp
+    }
+    return 0;
+}
+```
+
+用reverse，先整体反转再局部反转
+```
+#include<iostream>
+#include<string>
+#include<algorithm>
+using namespace std;
+int main(){
+    string s;
+    while(getline(cin,s)){
+        reverse(s.begin(),s.end());
+        string::iterator left=s.begin();
+        for(string::iterator itr=s.begin();itr!=s.end()+1;++itr){
+             if(itr==s.end()||*itr==' '){
+                 reverse(left,itr);
+                 left=itr+1;
+             }     
+        }
+        cout<<s<<endl;
+    }
+}
+```
+### 14、字串的连接最长路径查找（字符串，32.04%）
+
+**14.1题目描述**
+
+给定n个字符串，请对n个字符串按照字典序排列。
+
+输入描述:
+输入第一行为一个正整数n(1≤n≤1000),下面n行为n个字符串(字符串长度≤100),字符串中只含有大小写字母。
+
+输出描述:
+数据输出n行，输出结果为按照字典序排列的字符串。
+
+示例1
+输入
+
+9
+
+cap
+
+to
+
+cat
+
+card
+
+two
+
+too
+
+up
+
+boat
+
+boot
+
+输出
+
+boat
+
+boot
+
+cap
+
+card
+
+cat
+
+to
+
+too
+
+two
+
+up
+
+**14.2解题**
+使用sort排序，感觉这样和算法没有半毛钱的关系，注意输入和输出的正确性。
+```
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int n ;
+    vector<string> vs;
+    cin >> n;
+    string s;
+    while(n) {
+        cin >> s;
+        vs.push_back(s);
+        --n;
+    }
+    sort(vs.begin(), vs.end());
+    for(vector<string>::iterator iter=vs.begin(); iter!=vs.end(); ++iter) {
+        cout << *iter << endl;
+    }
+    return 0;
+}
+```
+
+### 15、
+
+**15.1题目描述**
+
+**15.2解题**
