@@ -1,3 +1,4 @@
+
 ### 1、求int型数据在内存中存储时1的个数（47.51%）
 
 **1.1 题目描述**
@@ -5,10 +6,10 @@
 输入一个int型的正整数，计算出该int型数据在内存中存储时1的个数。
 
 输入描述:
- 输入一个整数（int类型）
+输入一个整数（int类型）
 
 输出描述:
- 这个数转换成2进制后，输出1的个数
+这个数转换成2进制后，输出1的个数
 
 示例：
 输入 5
@@ -952,8 +953,133 @@ int main() {
 }
 ```
 
-### 15、
+### 15、删除字符串中出现次数最少的字符
 
 **15.1题目描述**
 
+实现删除字符串中出现次数最少的字符，若多个字符出现次数一样，则都删除。输出删除这些单词后的字符串，字符串中其它字符保持原来的顺序。 
+
+输入描述:
+字符串只包含小写英文字母, 不考虑非法输入，输入的字符串长度小于等于20个字节。
+
+输出描述:
+删除字符串中出现次数最少的字符后的字符串。
+
+示例1
+输入：abcdd
+输出：dd
+
 **15.2解题**
+
+**一开始没有写while(cin>>s)，直接写的是cin>>s，出错**
+```
+#include<iostream>
+#include<string>
+using namespace std;
+ 
+int main() {
+    string s;
+    while(cin >> s){
+        int count[26]={0};
+        for (int i=0; i<s.size(); ++i) { // 统计每个字符出现的次数
+            count[s[i]-'a']++;
+        }
+        int min = count[s[0]-'a'];
+        for (int i=0; i<s.size(); ++i) { // 找到字符出现最小的次数
+            if(min > count[s[i]-'a'])
+                min = count[s[i]-'a'];
+        }
+        for (int i=0; i<s.size(); ++i) {
+            if(count[s[i]-'a'] > min)
+                cout << s[i];       // 我本来想的是删除等于min的字符，那样还不知道要怎么做，
+                                          // 结果看到人家直接处理大于min的字符，学习了
+        }
+        cout << endl;
+    }
+    return 0;
+}
+```
+
+### 16、字符串分割
+
+**16.1题目描述**
+
+连续输入字符串(输出次数为N,字符串长度小于100)，请按长度为8拆分每个字符串后输出到新的字符串数组，
+
+长度不是8整数倍的字符串请在后面补数字0，空字符串不处理。
+
+首先输入一个整数，为要输入的字符串个数。
+
+例如：
+
+输入：2
+
+      abc
+
+      12345789
+
+输出：abc00000
+
+      12345678
+
+      90000000
+
+**16.2解题**
+
+本来想的是每一种情况分别比较的（自己分了3中情况：字符串的长度小于8，等于8和大于8，按照这3中情况分别处理，只是结果不对，一开始输出不了，修改后只能出输出了字符串长度小于8的（第一个测试用例的长度小于8），然后就放弃了，看了别人的代码，拿到一个字符串直接输出，使用一个变量记录每行输出字符的个数，每输出8个字符就换行，直到输出完这个字符串，同时关注最后一次输出的字符总个数够不够8，如果不够，就用0来补）
+```
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+void devideStr(int n,vector<string> inString);
+
+int main() {
+    int n;
+    string s;
+    while(cin >> n){
+        vector<string> inStr;
+        for(int i=0; i<n; i++) {
+            cin >> s;
+            inStr.push_back(s);
+        }
+        devideStr(n,inStr);
+    }
+    
+    return 0;
+    
+}
+
+void devideStr(int n,vector<string> inString){
+    
+    for(int i=0; i<n; i++) {  
+        
+        string str = inString[i];
+        int count = 0;
+        
+        for(int j=0; j<str.size(); j++) {
+            if(count == 8){
+                cout << endl;
+                count = 0;
+            }
+            cout << str[j];
+            count++;
+        }
+        
+        while(count < 8) {
+            cout << 0;
+            count++;
+        }
+        
+        cout << endl;
+    }
+}
+
+```
+
+### 17、
+
+**17.1题目描述**
+
+**17.2解题**
