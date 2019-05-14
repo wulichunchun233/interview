@@ -11,6 +11,14 @@
 - [9、合并表记录](#9合并表记录)
 - [10、提取不重复的整数](#10提取不重复的整数)
 - [11、字符个数统计](#11字符个数统计)
+- [12、密码验证合格程序](#12密码验证合格程序)
+- [13、句子逆序](#13句子逆序)
+- [14、字串的连接最长路径查找](#14字串的连接最长路径查找)
+- [15、删除字符串中出现次数最少的字符](#15删除字符串中出现次数最少的字符)
+- [16、字符串分割](#16字符串分割)
+- [17、记负均正II](#17记负均正ii)
+- [18、字符逆序](#18字符逆序)
+- [19、](#19)
 
 <!-- /TOC -->
 
@@ -648,7 +656,7 @@ int main() {
 
 **11.2解题**
 
-```<=  >=```号要写对，char可以直接和int型比较
+大于等于号、小于等于号 要写对，char可以直接和int型比较
 
 ```
 include <iostream>
@@ -1094,8 +1102,65 @@ void devideStr(int n,vector<string> inString){
 
 ```
 
-### 17、
+### 17、记负均正II
 
 **17.1题目描述**
 
+从输入任意个整型数，统计其中的负数个数并求所有非负数的平均值
+输入描述:
+输入任意个整数
+
+输出描述:
+输出负数个数以及所有非负数的平均值
+
+示例1
+输入
+复制
+-13
+-4
+-7
+输出
+复制
+3
+0.0
+
 **17.2解题**
+```
+include <iostream>
+include <iomanip>
+using namespace std;
+
+int main() {
+    int num;
+    int negative_counts = 0;
+    double positive_sums = 0;
+    int positive_counts = 0;
+    
+    while(cin >> num) {
+        if(num < 0)
+            negative_counts++;
+        else {
+            positive_counts++;
+            positive_sums += num;
+        }
+    }
+    cout << negative_counts << endl;
+    if(positive_counts > 0)
+        cout << setprecision(1) << fixed << positive_sums/positive_counts;
+    else
+        cout << 0.0 << endl;
+    return 0;
+}
+```
+
+### 18、字符逆序
+
+**18.1题目描述**
+
+**18.2解题**
+
+### 19、
+
+**19.1题目描述**
+
+**19.2解题**
