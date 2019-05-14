@@ -1,5 +1,22 @@
+<!-- TOC -->
 
-### 1、求int型数据在内存中存储时1的个数（47.51%）
+- [1、求int型数据在内存中存储时1的个数](#1求int型数据在内存中存储时1的个数)
+- [2、数字颠倒](#2数字颠倒)
+- [3、字符串最后一个单词的长度](#3字符串最后一个单词的长度)
+- [4、计算字符个数](#4计算字符个数)
+- [5、字符串分隔](#5字符串分隔)
+- [6、进制转换](#6进制转换)
+- [7、质数因子](#7质数因子)
+- [8、取近似值](#8取近似值)
+- [9、合并表记录](#9合并表记录)
+- [10、提取不重复的整数](#10提取不重复的整数)
+- [11、字符个数统计](#11字符个数统计)
+
+<!-- /TOC -->
+
+由于要生成目录，所以本文中include前的“#”被省略（生成目录真麻烦，要求目录中不能有符号，我用了（）和- 空格都没有通过，还要求目录的等级要是最高的）
+
+### 1、求int型数据在内存中存储时1的个数
 
 **1.1 题目描述**
 
@@ -36,7 +53,7 @@ int main() {
    return 0;
 }
 ```
-### 2、数字颠倒（46.37% —— 字符串）
+### 2、数字颠倒
 
 **2.1 题目描述**
 
@@ -74,7 +91,7 @@ int main() {
     return 0;
 }
 ```
-### 3、字符串最后一个单词的长度（23.35% —— 字符串）
+### 3、字符串最后一个单词的长度
 
 **3.1 题目描述**
 
@@ -113,7 +130,7 @@ int main() {
     return 0;
 }
 ```
-### 4、计算字符个数（21.72%）
+### 4、计算字符个数
 
 **4.1 题目描述**
 
@@ -157,7 +174,7 @@ int main() {
     return 0;
 }
 ```
-### 5、字符串分隔（21.87% —— 字符串）
+### 5、字符串分隔
 
 **5.1 题目描述**
 
@@ -319,7 +336,7 @@ int main() {
     return 0;   
 }
 ```
-### 6、进制转换（25% —— 字符串）
+### 6、进制转换
 
 **6.1题目描述**
 
@@ -380,7 +397,7 @@ int main() {
 }
 
 ```
-### 7、质数因子（27.45% —— 排序）
+### 7、质数因子
 
 **7.1题目描述**
 
@@ -450,7 +467,7 @@ int main()
       }
 }
 ```
-### 8、取近似值（44。25%）
+### 8、取近似值
 
 **8.1题目描述**
 
@@ -508,7 +525,7 @@ int main()
     return 0;
 }
 ```
-### 9、合并表记录（29.69% —— 栈）
+### 9、合并表记录
 
 **9.1题目描述**
 
@@ -565,7 +582,7 @@ int main() {
     return 0;
 }
 ```
-### 10、提取不重复的整数（33.47%）
+### 10、提取不重复的整数
 
 **10.1题目描述**
 
@@ -613,7 +630,7 @@ int main() {
     
 }
 ```
-### 11、字符个数统计（34.06%）
+### 11、字符个数统计
 
 **11.1题目描述**
 
@@ -634,10 +651,10 @@ int main() {
 ```<=  >=```号要写对，char可以直接和int型比较
 
 ```
-#include <iostream>
-#include <string>
-#include <set>
-#include <stdlib.h>
+include <iostream>
+include <string>
+include <set>
+include <stdlib.h>
 
 using namespace std;
 
@@ -661,7 +678,7 @@ int main() {
 ```
 ### 12、密码验证合格程序
 
-**12.1题目描述**
+**12.1 题目描述**
 
 密码要求:
 
@@ -693,7 +710,7 @@ NG
 NG
 OK
 
-**12.2解题**
+**12.2 解题**
 
 求解思路： 按照要求， 分别建立三个函数 check_lengh, check_char_kinds和check_substr_repeat。前两个函数难度不大，对于判断字符串内是否存在重复长度超二的子串，有两种解法：
 
@@ -702,10 +719,10 @@ OK
 2. 后缀数组方法：将字符串的子串 [i,n)存入vector容器suffix中，调用<algorithm>中的sort对子串按照字典序排列，遍历相邻子串suffix[i]与suffix[i+1]，求出其相同的字符数目，如果数目>2，即表示存在重复子串；
 
 ```
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
+include <iostream>
+include <string>
+include <vector>
+include <algorithm>
 
 using namespace std;
 
@@ -779,8 +796,7 @@ int main() {
     return 0;
 }
 ```
-### 13、句子逆序（数组，27.04%）
-
+### 13、句子逆序
 **13.1题目描述**
 
 将一个英文语句以单词为单位逆序排放。例如“I am a boy”，逆序排放后为“boy a am I”
@@ -802,9 +818,9 @@ res存储当前字符串，每次把剥离出来的单词tmp加在res前面。
 
 方法是简单，但效率较低。1：每个字符串都会进行判断，而判断只是为了区分第一个。2：res向后复制，string会多次进行内存重新分配。
 ```
-#include <iostream>
-#include <string>
-#include <sstream>
+include <iostream>
+include <string>
+include <sstream>
 
 using namespace std;
 
@@ -827,8 +843,8 @@ int main() {
 
 下面这个方法是直接逆序输出
 ```
-#include <iostream>
-#include <string>
+include <iostream>
+include <string>
 
 using namespace std;
 
@@ -852,9 +868,9 @@ int main() {
 
 用reverse，先整体反转再局部反转
 ```
-#include<iostream>
-#include<string>
-#include<algorithm>
+include<iostream>
+include<string>
+include<algorithm>
 using namespace std;
 int main(){
     string s;
@@ -871,7 +887,7 @@ int main(){
     }
 }
 ```
-### 14、字串的连接最长路径查找（字符串，32.04%）
+### 14、字串的连接最长路径查找
 
 **14.1题目描述**
 
@@ -929,10 +945,10 @@ up
 **14.2解题**
 使用sort排序，感觉这样和算法没有半毛钱的关系，注意输入和输出的正确性。
 ```
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
+include <iostream>
+include <string>
+include <vector>
+include <algorithm>
 using namespace std;
 
 int main() {
@@ -973,8 +989,8 @@ int main() {
 
 **一开始没有写while(cin>>s)，直接写的是cin>>s，出错**
 ```
-#include<iostream>
-#include<string>
+include<iostream>
+include<string>
 using namespace std;
  
 int main() {
@@ -1028,9 +1044,9 @@ int main() {
 
 本来想的是每一种情况分别比较的（自己分了3中情况：字符串的长度小于8，等于8和大于8，按照这3中情况分别处理，只是结果不对，一开始输出不了，修改后只能出输出了字符串长度小于8的（第一个测试用例的长度小于8），然后就放弃了，看了别人的代码，拿到一个字符串直接输出，使用一个变量记录每行输出字符的个数，每输出8个字符就换行，直到输出完这个字符串，同时关注最后一次输出的字符总个数够不够8，如果不够，就用0来补）
 ```
-#include <iostream>
-#include <string>
-#include <vector>
+include <iostream>
+include <string>
+include <vector>
 using namespace std;
 
 void devideStr(int n,vector<string> inString);
