@@ -17,6 +17,7 @@
 
 - python
     - [python基础](/docs/notes/python/python_base.md)
+    - [python高级](/docs/notes/python/python_high.md)
 - Java
     - [java基础](/docs/notes/java/java_base.md)
 - c++
