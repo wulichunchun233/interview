@@ -14,7 +14,7 @@
 
 ## 编程语言
 - c++
-    - [零散的知识点](/docs/notes/c++/零散的知识点.md)
+    - [在编程中遇到的零散的知识点](/docs/notes/c++/在编程中遇到的零散的知识点.md)
     - [string、vector和数组](/docs/notes/c++/string和vector.md)
     - [表达式](/docs/notes/c++/expression.md)
     - [函数](/docs/notes/c++/function.md)
