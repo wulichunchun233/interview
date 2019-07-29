@@ -68,7 +68,7 @@ python 动态修改属性和方法的总结如下：
 
 #### 创建生成器的几种方法
 
-##### 方法一：列表生成式修改法
+方法一：列表生成式修改法
 
 一个普通的列表生成式：
 
@@ -88,3 +88,51 @@ a = (x for x in range(10))
 
 生成器保存的是算法，每次调用 next(a) ，就会计算出 a 的下一个元素的值，直到计算到最后一个元素，没有更多元素的时候，便会抛出 stopIteration 异常。但这种方式并不推荐使用，而是推荐使用 for 循环，因为生成器也是属于可迭代对象。
 
+方法二：函数法
+
+可以将函数中所要生成元素的位置更改为 **yield 元素**。这样该函数便成为了一个生成器。
+
+因为 yield 是阻断式输出命令，程序通过 next 方法执行的时候便会停止在 yield 这里，也就是说每一次的遍历都是以 yield 作为分界线的。
+
+例如，使用生成器来实现斐波那契数列：
+
+```python
+def fib(times):
+    n = 0
+    a,b = 0,1
+    while n<times:
+        yield b
+        a,b = b,a+b
+        n += 1
+    return 'done'
+```
+
+使用 for 循环便可以将每一次产生的数获取到。
+
+```python
+for n in fib(100):
+    print(n)
+```
+
+但是使用 for 循环调用生成器的时候，会发现拿不到生成器的 return 语句的返回值。如果想要拿到该值的话就得使用 try-except 来捕获 StopIteration 错误：
+
+```python
+test = fib(100)
+while True:
+    try:
+        x = next(test)
+        print(x)
+    except StopIteration as e:
+        print(e.value)
+        break
+```
+
+为了获取生成器 test 的下一个生成的元素，可以通过如下的三种方式：
+
+- next(test)
+- test.\_\_next__()
+- test.send(None)
+
+**test.\_\_next__()与test.send(None)的区别？**
+
+- test.send(None) 的作用
