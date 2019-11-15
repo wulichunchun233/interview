@@ -40,6 +40,13 @@
 
 ### 6.数据库
 
+### 7.IT技能
+
+- [后台框架](/docs/notes/7.it/readme.md)
+- [爬虫](/docs/notes/7.it/crawler.md)
+- [机器学习](/docs/notes/7.it/ml.md)
+- [神经网络](/docs/notes/7.it/nn.md)
+
 ## 二、面经整理
 
 - [Java开发工程师](/docs/面经/Java研发工程师/)
