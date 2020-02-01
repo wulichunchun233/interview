@@ -1893,7 +1893,16 @@ echo $(($a+$b))
 2.计算1-100的和
 
 ```shell
+#! /bin/sh
 
+index=1
+sum=0
+
+while [ "$index" -le 100 ]; do
+        sum=$(($sum+$index))
+        index=$(($index+1))
+done    
+echo $sum
 ```
 
 3.将一目录下所有的文件的扩展名改为bak
