@@ -18,6 +18,7 @@
 - python
     - [python基础](/docs/notes/1.编程语言/python/python_base.md)
     - [python高级](/docs/notes/1.编程语言/python/python_high.md)
+    - [python面试问题](/docs/notes/1.编程语言/python/python_interview.md)
 
 
 ### 2.数据结构
