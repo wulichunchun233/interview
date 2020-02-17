@@ -1879,16 +1879,48 @@ uniq
 -u: 仅显示不曾重复的行
 ```
 
-## 十、shell习题训练
+## 十、开机自启动脚本
+
+如果要添加为开机启动执行的脚本文件，可先将脚本复制或者软连接到/etc/init.d/目录下，然后用：
+
+```shell
+update-rc.d 脚本文件 defaults NN(NN为启动顺序)
+```
+
+来将脚本添加到初始化执行的队列中去（该方法是Ubuntu系统中设置开机启动项的方式）。
+
+注意如果脚本需要用到网络，则NN需设置一个比较大的数字，如99。
+
+具体在 Ubuntu 中设置一个开机自启动的脚本的过程如下：
+
+1) 将你的启动脚本复制到 /etc/init.d 目录下,以下假设你的脚本文件名为 test。
+
+2) 设置脚本文件的权限
+
+```shell
+$ sudo chmod 755 /etc/init.d/test
+```
+
+3) 执行如下命令将脚本放到启动脚本中去：
+```shell
+$ cd /etc/init.d
+$ sudo update-rc.d test defaults 95
+```
+
+## 十一、shell习题训练
 
 1.求2个数之和
 
 ```shell
 #! /bin/sh
-  
-a=1
-b=2
-echo $(($a+$b))
+
+first=0
+second=0
+read -p "Input the first number" first
+read -p "Input the second number" second
+result=$(($first+$second))
+echo "result is: $result"
+exit 0
 ```
 2.计算1-100的和
 
@@ -1898,20 +1930,58 @@ echo $(($a+$b))
 index=1
 sum=0
 
-while [ "$index" -le 100 ]; do
+while [ $index -le 100 ]; do
         sum=$(($sum+$index))
         index=$(($index+1))
 done    
-echo $sum
+
+echo "1+2+3+...+100=$sum"
 ```
 
 3.将一目录下所有的文件的扩展名改为bak
 
+```shell
+#! /bin/bash
+
+# *.*为正则
+# mv 为真正完成的命令
+for i in *.*; do
+    mv $i ${i%%.*}.bak
+done
+```
+
 4.编译当前目录下的所有.c文件：
+
+```shell
+#! /bin/bash
+
+for file in *.c; do
+    echo $file;
+    # 开始进行编译
+    gcc -o ${basename $file .c} $file;
+    sleep 2;
+done
+
+> compile 2>&1
+```
 
 5.打印root可以使用可执行文件数，处理结果: root's bins: 2306
 
+```shell
+#! /bin/bash
+
+echo "root's bins: $(find ./ -type f & -user root| xargs ls -l | sed '/-..*/p' | wc -l)"
+```
+
 6.打印当前sshd的端口和进程id，处理结果: sshd Port&&pid: 22 5412
+
+```shell
+#! /bin/bash
+
+# netstat 用来访问网络端口，得使用sudo执行
+# sed 处理行数据
+netstat -apn | grep sshd | sed -n 's/.*:::\([0-9]*\)\.*\ \([0-9]*\)\/sshd/\1 \2/p'
+```
 
 7.输出本机创建20000个目录所用的时间，处理结果:
 
@@ -1921,7 +1991,27 @@ user    0m0.066s
 sys     0m1.925s
 ```
 
+```shell
+#! /bin/bash
+
+# time为记录命令执行的时间
+time (
+    for i in {1..20000}; do
+        mkdir /tmp/nnn$i
+    done
+)
+```
+
 8.打印本机的交换分区大小，处理结果: Swap:1024M
+
+```shell
+#! /bin/bash
+
+# free用来查看系统空间设置
+# sed用来查找一行数据
+# awk用来打印列数据
+free -m | sed -n '/Swap/p' | awk '{print $2}'
+```
 
 9.文本分析，取出/etc/password中shell出现的次数
 
@@ -1938,6 +2028,18 @@ sys     0m1.925s
         /sbin/nologin   30
         /sbin/halt      1
         /sbin/shutdown  1
+```
+
+```shell
+#! /bin/sh
+
+# cat首先打印文件内容
+# awk对文件进行按列查找，-F指定分割符号
+# sort进行排序
+# uniq进行合并
+cat /etc/passwd | awk -F: '{if ($7!="") print $7}' | sort | uniq -c
+
+# cat /etc/passwd | awk -F: '{if ($7!="") print $7}' | sort | uniq -c | awk 'print $2.$1'
 ```
 
 10.文件整理，employee文件中记录了工号和姓名,（提示join）
@@ -1961,11 +2063,54 @@ bonus.txt:
     200 john doe  $500
     300 sanjay gupta  $3,000
 ```
+
+```shell
+#! /bin/sh
+
+# join用来合并两个文件
+# sort用来排序 -k 2 表示按照第二列进行排序
+join employee.txt bonus.txt | sort -k 2
+```
+
 11.写一个shell脚本来得到当前的日期，时间，用户名和当前工作目录。
+
+```shell
+#! /bin/sh
+
+# 注意在echo输出的内容中要执行命令得用反引号引起来
+echo "hello. $LOGNAME"
+echo "Current date is `date`"
+echo "User is `who i am`"
+echo "Current directory `pwd`"
+```
 
 12.编写shell脚本获取本机的网络地址。
 
+```shell
+#! /bin/sh
+
+IP=`ifconfig eth0 | grep 'inet' | sed 's/^.*addr://g' | sed 's/Bcast.*$//g'`
+NETMASK=`ifconfig eth0 | grep 'inet' | sed 's/^.*Mask://g'`
+
+#echo "$IP/NETMASK"
+echo "$IP"
+
+exit 0
+```
+
 13.编写个shell脚本将当前目录下大于10K的文件转移到/tmp目录下
+
+```shell
+#! /bin/sh
+
+for FileName in `ls -l | awk '$5>10240 {print $9}'`; do
+    mv $Filename /temp
+done
+
+ls -al /tmp
+
+echo "Done!"
+```
 
 14.编写一个名为myfirstshell.sh的脚本，它包括以下内容。
 
@@ -1982,6 +2127,36 @@ i) 显示变量TERM、PATH和HOME的值。
 j) 显示磁盘使用情况。
 k) 用id命令打印出您的组ID。
 m) 跟用户说“Good bye”
+```
+
+```shell
+#! /bin/sh
+
+# test by wx
+
+user=`whoami`
+case $user in
+    root)
+        echo "hello root";;
+    wx)
+        echo "hello wx";;
+    *)
+        echo "hello $user.welcome"
+esac
+
+echo "日期和时间：`date`"
+echo "日历：`cal`"
+echo "本机的机器名：`uname -n`"
+echo "当前这个操作系统的名称的版本：`uname -s;uname -r`"
+echo "父目录中所有文件的列表：`ls ../`"
+echo "root正在运行的所有进程：`ps -u root`"
+echo "变量TERM的值：$TERM"
+echo "变量PATH的值：$PATH"
+echo "变量HOME的值：$HOME"
+echo "磁盘的使用情况：`df`"
+echo "用id命令打印出你的组ID：`id -g`"
+echo "Good bye !"
+exit 0
 ```
 
 15.文件移动拷贝，有m1.txt m2.txt m3.txt m4.txt，分别创建出对应的目录，m1 m2 m3 m4 并把文件移动到对应的目录下
