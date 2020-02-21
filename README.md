@@ -48,6 +48,10 @@
 - [机器学习](/docs/notes/7.it/ml.md)
 - [神经网络](/docs/notes/7.it/nn.md)
 
+### 8.算法
+
+- [算法做题技巧](/docs/notes/8.算法/算法做题技巧.md)
+
 ## 二、面经整理
 
 - [Java开发工程师](/docs/面经/Java研发工程师/)
