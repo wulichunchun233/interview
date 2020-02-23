@@ -31,9 +31,7 @@ nginx 的工作流程如下图所示，用户的请求首先发送到 nginx 上�
 - zlib下载地址（nginx需要，用于数据压缩与解压缩）：[http://www.zlib.net/](http://www.zlib.net/)
 - openssl下载地址（nginx需要，用于进行 https 协议）：[https://github.com/openssl/openssl](https://github.com/openssl/openssl)
 
-将这些文件下载到服务器中，并放置到一个文件夹下进行解压，如下图所示：
-
-![5](/assets/images/linux/5.png)
+将这些文件下载到服务器中，并放置到一个文件夹下进行解压
 
 ### 安装前配置
 

@@ -36,8 +36,8 @@
 
 ### 5.linux
 
-- [linux系统知识](/docs/notes/5.linux/linux.md)
-- [shell脚本编程](/docs/notes/5.linux/shell.md)
+- [linux](/docs/notes/5.linux/linux.md)
+- [shell](/docs/notes/5.linux/shell.md)
 - [nginx](/docs/notes/5.linux/nginx.md)
 - [linux面试常考知识点整理](/docs/notes/5.linux/linux面试问题.md)
 
