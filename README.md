@@ -3,6 +3,7 @@
 ## 一、知识点整理
 
 ### 1.编程语言
+
 - c++
     - [在编程中遇到的零散的知识点](/docs/notes/1.编程语言/c++/在编程中遇到的零散的知识点.md)
     - [string、vector和数组](/docs/notes/1.编程语言/c++/string和vector.md)
@@ -39,6 +40,7 @@
 - [linux](/docs/notes/5.linux/linux.md)
 - [shell](/docs/notes/5.linux/shell.md)
 - [nginx](/docs/notes/5.linux/nginx.md)
+- [自动化部署](/docs/notes/5.linux/自动化部署.md)
 - [linux面试常考知识点整理](/docs/notes/5.linux/linux面试问题.md)
 
 ### 6.数据库
