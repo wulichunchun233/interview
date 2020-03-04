@@ -138,11 +138,11 @@
 
 ### linux
 
-- [linux](/docs/notes/5.linux/linux.md)
-- [shell](/docs/notes/5.linux/shell.md)
-- [nginx](/docs/notes/5.linux/nginx.md)
-- [自动化部署](/docs/notes/5.linux/自动化部署.md)
-- [linux面试常考知识点整理](/docs/notes/5.linux/linux面试问题.md)
+- [linux](/docs/notes/4.操作系统/linux/linux.md)
+- [shell](/docs/notes/4.操作系统/linux/shell.md)
+- [nginx](/docs/notes/4.操作系统/linux/nginx.md)
+- [自动化部署](/docs/notes/4.操作系统/linux/自动化部署.md)
+- [linux面试常考知识点整理](/docs/notes/4.操作系统/linux/linux面试问题.md)
 
 ---
 
