@@ -34,8 +34,12 @@
 
 重要知识点详解：
 
-- [用好Java中的枚举,真的没有那么简单!](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/basis/%E7%94%A8%E5%A5%BDJava%E4%B8%AD%E7%9A%84%E6%9E%9A%E4%B8%BE%E7%9C%9F%E7%9A%84%E6%B2%A1%E6%9C%89%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95.md)
-- [Java 常见关键字总结：final、static、this、super!](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/basis/final%E3%80%81static%E3%80%81this%E3%80%81super.md)
+- [枚举](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/basic/%E7%94%A8%E5%A5%BDJava%E4%B8%AD%E7%9A%84%E6%9E%9A%E4%B8%BE%E7%9C%9F%E7%9A%84%E6%B2%A1%E6%9C%89%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95.md) （很重要的一个数据结构，用好枚举真的没有那么简单！）
+- [Java 常见关键字总结：final、static、this、super!](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/basic/final%E3%80%81static%E3%80%81this%E3%80%81super.md)
+- [什么是反射机制?反射机制的应用场景有哪些?](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/basic/reflection.md)
+其他：
+
+- [JAD反编译](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/JAD%E5%8F%8D%E7%BC%96%E8%AF%91tricks.md)
 
 ##### 容器
 
@@ -101,8 +105,7 @@
 
 ## 2.数据结构
 
-- [数组和字符串](/docs/notes/2.数据结构/array.md)
-- [树](/docs/notes/2.数据结构/tree.md)
+- [数据结构](/docs/notes/2.数据结构/数据结构.md)
 
 ---
 
