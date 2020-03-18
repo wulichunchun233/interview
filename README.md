@@ -59,7 +59,7 @@
 面试题总结：
 
 - [Java 并发基础常见面试题总结](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/Multithread/JavaConcurrencyBasicsCommonInterviewQuestionsSummary.md)
-- [Java 并发进阶常见面试题总结](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/Multithread/JavaConcurrencyBasicsCommonInterviewQuestionsSummary.md)
+- [Java 并发进阶常见面试题总结](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/Multithread/JavaConcurrencyAdvancedCommonInterviewQuestions.md)
 
 必备知识点：
 
