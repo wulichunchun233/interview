@@ -11,8 +11,6 @@
 - [函数](/docs/notes/1.编程语言/c++/function.md)
 - [类](/docs/notes/1.编程语言/c++/class.md)
 
-### Java
-
 ### python
 
 - [python基础](/docs/notes/1.编程语言/python/python_base.md)
@@ -49,27 +47,17 @@
 
 ## 5.数据库
 
+- [Redis 知识点归纳总结](https://wangxin1248.github.io/sql/2018/07/redis-base-1.html)
+- [MongoDB 知识点归纳总结（二）](https://wangxin1248.github.io/sql/2018/07/mongodb-base2.html)
+- [MongoDB 知识点归纳总结（一）](https://wangxin1248.github.io/sql/2018/07/mongodb-base1.html)
+- [MySQL 知识点归纳总结（二）](https://wangxin1248.github.io/sql/2018/07/mysql-base-2.html)
+- [MySQL 知识点归纳总结（一）](https://wangxin1248.github.io/sql/2018/07/mysql-base-1.html)
+
 ---
 
 ## 6.算法
 
 - [算法做题技巧](/docs/notes/6.算法/算法做题技巧.md)
-
-## 7.工具
-
-
-## 8.框架
-
-### JavaGuild 整理
-
-#### Spring
-- [Spring 学习与面试](https://github.com/Snailclimb/JavaGuide/blob/master/docs/system-design/framework/spring/Spring.md)
-- [Spring 常见问题总结](https://github.com/Snailclimb/JavaGuide/blob/master/docs/system-design/framework/spring/SpringInterviewQuestions.md)
-- [Spring中 Bean 的作用域与生命周期](https://github.com/Snailclimb/JavaGuide/blob/master/docs/system-design/framework/spring/SpringBean.md)
-- [SpringMVC 工作原理详解](https://github.com/Snailclimb/JavaGuide/blob/master/docs/system-design/framework/spring/SpringMVC-Principle.md)
-- [Spring中都用到了那些设计模式?](https://github.com/Snailclimb/JavaGuide/blob/master/docs/system-design/framework/spring/Spring-Design-Patterns.md)
-#### SpringBoot
-- [SpringBoot 指南/常见面试题总结](https://github.com/Snailclimb/springboot-guide)
 
 ---
 
