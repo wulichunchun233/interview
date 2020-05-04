@@ -17,6 +17,9 @@
 - [python高级](/docs/notes/1.编程语言/python/python_high.md)
 - [python面试问题](/docs/notes/1.编程语言/python/python_interview.md)
 
+### Java
+
+- [java知识点整理](/docs/notes/1.编程语言/java.md)
 ---
 
 ## 2.数据结构
