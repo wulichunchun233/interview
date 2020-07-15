@@ -21,7 +21,7 @@
 
 - [Spring.md](./05_Spring.md)
 - [消息队列](./06_消息队列MQ.md)
-- [分布式搜索引擎](./07_分布式搜索引擎 Elasticsearch.md)
+- [分布式搜索引擎](./07_分布式搜索引擎Elasticsearch.md)
 
 ### 操作系统
 
