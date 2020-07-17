@@ -25,11 +25,11 @@ ES 的索引库是一个逻辑概念，它包括了**分词列表**及**文档�
 
 elasticsearch 的设计理念是分布式搜索引擎，底层其实还是基于 lucene 的。
 
-核心思想就是在多台机器上启动多个 es 进程实例，组成一个 es 集群。es 中存储的基本单位是索引，索引就相当于 mysql 中的一张表。es 中的基本概念：index、type、mapping、document、field。（es在版本之后忽略type）mapping就是相当于 mysql 中的表结构定义，定义了type中每个字段的名称以及字段类型以及相应的配置；往 index 中写入的一条数据就是 document，一条 document 就相当于 mysql 中某个表的一行，每个 document 中有多个 field，每个 field 代表了这个 document 中一个字段的值。
+核心思想就是在多台机器上启动多个 es 进程实例，组成一个 es 集群。es 中存储的基本单位是索引，索引就相当于 mysql 中的一张表。es 中的基本概念：index、type、mapping、document、field。（es在9.0版本之后忽略type）mapping就是相当于 mysql 中的表结构定义，定义了type中每个字段的名称以及字段类型以及相应的配置；往 index 中写入的一条数据就是 document，一条 document 就相当于 mysql 中某个表的一行，每个 document 中有多个 field，每个 field 代表了这个 document 中一个字段的值。
 
-创建在 es 中的 index 会被拆分为多个 shard，每个 shard 中会存放 index 中的一部分数据。接着 shard 中的数据还会进行多个备份，也就是说每个 shard 中都有一个 primary shard，负责写入数据，但是还有几个 replica shard（一般 primary 和 replica 不在同一台设备上）。primary shard 写入数据之后会将数据同步到其他几个 replica shard 上去。但是客户端进去数据的读取的时候是可以通过 primary shard 或者 replica shard 任何一个 shard 都可以的。也就是说写入只可以是 primary shard，而读取 primary 和 replica 都是可以的。
+创建在 es 中的 **index 会被拆分为多个 shard，每个 shard 中会存放 index 中的一部分数据**。接着 shard 中的数据还会进行多个备份，也就是说每个 shard 中都有一个 primary shard，负责写入数据，但是还有几个 replica shard（一般 primary 和 replica 不在同一台设备上）。primary shard 写入数据之后会将数据同步到其他几个 replica shard 上去。但是客户端进去数据的读取的时候是可以通过 primary shard 或者 replica shard 任何一个 shard 都可以的。也就是说**写入只可以是 primary shard，而读取 primary 和 replica 都是可以的**。
 
-整个 es 集群会自动选举一个一个节点作为 master 节点，这个 master 节点其实就是干一些管理的工作，比如维护元数据以及负责切换 primary shard 和 replica shard 的身份等。假如 master 节点宕机了则会重新选举一个节点为 master 节点。
+整个 es 集群会自动选举一个一个节点作为 master 节点，这个 **master 节点其实就是干一些管理的工作**，比如维护元数据以及负责切换 primary shard 和 replica shard 的身份等。假如 master 节点宕机了则会重新选举一个节点为 master 节点。
 
 节点宕机之后其上面的 primary shard 的身份会有对应的 replica shard 来代替成为新的 primary shard。当宕机的机器修复好之后 mater 节点会将缺失的 replica shard 分配过去，同步后续修改的数据，让集群恢复正常。
 
@@ -37,7 +37,7 @@ elasticsearch 的设计理念是分布式搜索引擎，底层其实还是基于
 
 ### 2.es写入和查询数据的原理是什么？
 
-1）es写数据原理：
+**1）es写数据原理：**
 
 1、客户端随机选择一个 node 发送写数据请求，这个 node 就被作为 coordinating node（协调节点）
 
@@ -47,7 +47,7 @@ elasticsearch 的设计理念是分布式搜索引擎，底层其实还是基于
 
 4、coordinating node 发现 primary 和 replica shard 都完成数据保存操作之后会返回对应的响应信息给客户端。
 
-2）es读数据原理：
+**2）es读数据原理：**
 
 查询，GET一条数据，写入了一个 document，这个 document 会自动分配一个全局唯一的 id，doc id，同时也是根据 doc id 进行 hash 路由到对应的 primary shard 上。
 
@@ -55,13 +55,13 @@ elasticsearch 的设计理念是分布式搜索引擎，底层其实还是基于
 
 1、客户端随机选择一个 node 发送读取数据请求，该 node 作为 coordinating node
 
-2、coordinating node 对 document 进行 hash 选择保存数据的 shard，然后将消息转发到具有该 sahrd 的 node 上，此时会使用 round-robin 随机轮询算法在 primary 和 replica 中随机选择一个让读请求进行负载均衡。
+2、coordinating node 对 document 进行 hash 选择保存数据的 shard，然后将消息转发到具有该 sahrd 的 node 上，此时会使用 **round-robin 随机轮询算法**在 primary 和 replica 中随机选择一个让读请求进行负载均衡。
 
 3、执行该请求的 node 会返回对应的 document 给 coordinating node
 
 4、coordinating node 返回 document 给客户端。 
 
-3）es索引数据原理：
+**3）es索引数据原理：**
 
 es最强大的就是做全文检索
 
@@ -71,21 +71,21 @@ es最强大的就是做全文检索
 
 3、query phase：每个shard将自己的搜索结果（doc id）返回给协调节点，由协调节点进行数据的合并、排序、分页等操作，产生最终的结果
 
-4、fetch phase：接着由协调节点根据 doc is 去各个节点上拉取实际的 document 数据，最后返回给客户端。
+4、fetch phase：接着由协调节点根据 doc id 去各个节点上拉取实际的 document 数据，最后返回给客户端。
 
 ### 3.es在数据量很大（几亿级别）的情况下如何提高查询效率？
 
 实际上来说，es性能优化是没有什么银蛋的。也就是不能通过调节参数来应对所有的性能慢的场景。需要一点点来分析：
 
-在海量数据的场景下，如何提升 es 的性能。（主要就是 es 的底层实现原理的考查，针对底层实现原理来优化其中最重要的 filesystem cache）
+在海量数据的场景下，如何提升 es 的性能。（**主要就是 es 的底层实现原理的考查，针对底层实现原理来优化其中最重要的 filesystem cache**）
 
 **1）性能优化的杀手锏 - filesystem cache**
 
-往es写入的数据实际都写入到磁盘文件中，磁盘文件里的数据操作系统会自动将其缓存到 os cache 里面去。也就是真正的数据保存在磁盘文件中。
+往es写入的数据实际都写入到磁盘文件中，**磁盘文件里的数据操作系统会自动将其缓存到 os cache **里面去。也就是真正的数据保存在磁盘文件中。
 
-然后当有客户端来读取索引的时候，会首先通过 es 的 shard 来向操作系统来读取数据，这时其实会首先先访问操作系统的 filesystem cache，当 cache 中没有存在这些数据的时候才会去从磁盘文件中去读，此时就非常浪费时间了。由此可见，es 的搜索引擎严重依赖与底层的 filesystem cache，因此如果给 filesystem cache 更多的内存，尽量让内存可以容纳所有的 index segment file 索引数据文件，那么你搜索的时候就基本都是走内存的，性能会非常高。
+然后当有客户端来读取索引的时候，会首先通过 es 的 shard 来向操作系统来读取数据，这时其实会**首先先访问操作系统的 filesystem cache，当 cache 中没有存在这些数据的时候才会去从磁盘文件中去读** ，此时就非常浪费时间了。由此可见，es 的搜索引擎严重依赖与底层的 filesystem cache，因此如果给 filesystem cache 更多的内存，尽量让内存可以容纳所有的 index segment file 索引数据文件，那么你搜索的时候就基本都是走内存的，性能会非常高。
 
-因此想让 es 的性能要好，最佳情况下要保证机器的内存可以至少容纳总数据量的一半，也就是说仅仅在 es 上存储少量的数据。同时也可以尽可能的让 es 存储比较重要的数据，将一些比较重要的数据用来检索的数据存储在es，提高效率。
+因此想让 es 的性能要好，最佳情况下**要保证机器的内存可以至少容纳总数据量的一半**，也就是说仅仅在 es 上存储少量的数据。同时也可以尽可能的让 es 存储比较重要的数据，将一些比较重要的数据用来检索的数据存储在es，提高效率。
 
 一般是**使用 es + hbase 架构**。hbase的特点是适用于海量数据的在线存储，存储在 hbase 中的数据不需要做复杂的搜索，只需要进行简单的根据 id 或者范围来进行查询即可。这样使用 es 来查询到 doc id，然后使用 doc id 来去 hbase 中去查询每个 doc id 对应的数据。或者放在 mysql 里也是可以的。
 
@@ -93,11 +93,11 @@ es最强大的就是做全文检索
 
 **2）缓存预热**
 
-加入在 es 中保存的数据还是超过了 filesystem cache 的大小。这时候还可以通过数据预热的机制来将一些比较热门的数据进行数据预测处理。也就是自己开发一个数据预热系统，然后定期的将一些比较热门的数据进行读取，这样就会将这些比较热门的数据刷入到 filesystem cache 中，也可以做到提高数据检索的效果。
+加入在 es 中保存的数据还是超过了 filesystem cache 的大小。这时候还可以**通过数据预热的机制来将一些比较热门的数据进行数据预处理**。也就是自己开发一个数据预热系统，然后定期的将一些比较热门的数据进行读取，这样就会将这些比较热门的数据刷入到 filesystem cache 中，也可以做到提高数据检索的效果。
 
 **3）冷热分离**
 
-可以将索引数据中比较常用的数据和使用较少的数据分开来存储到不同的 index 中。然后保持热数据也就经常查询的数据全都存放在 filesystem cache 中，而那么冷数据放在磁盘中也是无所谓的。
+可以将索引数据中比较常用的数据和使用较少的数据分开来存储到不同的 index 中。然后保持热数据也就**经常查询的数据全都存放在 filesystem cache 中，而那么冷数据放在磁盘中也是无所谓的**。
 
 **4）document模型设计**
 
@@ -105,7 +105,7 @@ es最强大的就是做全文检索
 
 **5）分页检索**
 
-es 的分页检索的实现原理是将需要分页的数据的前面所有的数据从每一个 shard 中取出来，然后在协调节点中进行相关分页的实现。也就是说分页的页数越深的话需要从其他 shard 上读取的数据就越多，也就导致效率越低。
+es 的分页检索的实现原理是将需要分页的数据的前面所有的数据从每一个 shard 中取出来，然后在协调节点中进行相关分页的实现。也就是说**分页的页数越深的话需要从其他 shard 上读取的数据就越多，也就导致效率越低**。
 
 可以的话尽量避免在系统中提供比较深的分页的功能。或者直接提示用户较深的分页是需要更多的时间来完成的。
 

@@ -1,4 +1,12 @@
-## Spring
+# Spring
+
+### 0.什么是Spring
+
+Spring 是一个开源框架，是为了解决企业应用程序开发复杂性而创建的。框架的主要优势之一就是其分层架构，分层架构允许您选择使用哪一个组件，同时为 J2EE 应用程序开发提供集成的框架。Spring使用基本的JavaBean来完成以前只可能由EJB完成的事情。任何 Java 应用都可以从 Spring 中受益。Spring 的核心是**控制反转（IoC）和面向切面（AOP）**。简单来说，Spring 是一个分层的 JavaSE/EE full-stack(一站式) **轻量级开源框架**。
+
+IoC 不是一种技术，只是一种思想，一个重要的面向对象编程的法则，它能指导我们如何设计出松耦合、更优良的程序。
+
+AOP即**Aspect-Oriented programming**的缩写，中文意思是面向切面（或方面）编程。他是一种思想，可在不改变程序源码的情况下为程序添加额外的功能。
 
 ### 1.简单介绍一下 Spring bean ;知道 Spring 的 bean 的作用域与生命周期吗?
 
@@ -42,16 +50,6 @@ Spring Bean的生命周期是这样的：
 
 ### 2.Spring 中的事务传播行为了解吗? TransactionDeﬁnition 接口中哪五个表示隔离级别的常量?
 
-**隔离级别**
-
-TransactionDeﬁnition 接口中定义了**五个**表示隔离级别的常量（后四个分别对应于mysql的事物隔离级别）：
-
-- **TransactionDeﬁnition.ISOLATION_DEFAULT**: 使用后端数据库默认的隔离级别，Mysql 默认采用的 **REPEATABLE_READ** 隔离级别（加锁之后可以实现到SERIALIZABLE级别） Oracle 默认采用的 READ_COMMITTED隔离级别；
-- **TransactionDeﬁnition.ISOLATION_READ_UNCOMMITTED**: 最低的隔离级别，**允许读取尚未提交的数据变更**，可能会导致**脏读、幻读或不可重复读** ；
-- **TransactionDeﬁnition.ISOLATION_READ_COMMITTED**: **允许读取并发事务已经提交的数据**，可以**阻止脏读，但是幻读或不可重复读仍有可能发生** ；
-- **TransactionDeﬁnition.ISOLATION_REPEATABLE_READ**: **对同一字段的多次读取结果都是一致的**，除非数据是被本身事务自己所修改，可以**阻止脏读和不可重复读，但幻读仍有可能发生**。 
-- **TransactionDeﬁnition.ISOLATION_SERIALIZABLE**: 最高的隔离级别，完全服从ACID的隔离级别。**所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰**，也就是说，该级别**可以防止脏读、不可重复读以及幻读**。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
-
 **事务传播行为**
 
 事务传播行为（为了解决业务层方法之间互相调用的事务问题）： **当事务方法被另一个事务方法调用时，必须指定事务应该如何传播**。例如：方法可能继续在现有事务中运行，也可能开启一个新事务，并在自己的事务中运行。
@@ -73,6 +71,16 @@ TransactionDeﬁnition 接口中定义了**五个**表示隔离级别的常量�
 **其他情况：**
 
 - **TransactionDeﬁnition.PROPAGATION_NESTED**： 如果当前存在事务，则创建一个事务作为当前事务的嵌套事 务来运行；如果当前没有事务，则该取值等价于TransactionDeﬁnition.PROPAGATION_REQUIRED。
+
+**隔离级别**
+
+TransactionDeﬁnition 接口中定义了**五个**表示隔离级别的常量（后四个分别对应于mysql的事物隔离级别）：
+
+- **TransactionDeﬁnition.ISOLATION_DEFAULT**: 使用后端数据库默认的隔离级别，Mysql 默认采用的 **REPEATABLE_READ** 隔离级别（加锁之后可以实现到SERIALIZABLE级别） Oracle 默认采用的 READ_COMMITTED隔离级别；
+- **TransactionDeﬁnition.ISOLATION_READ_UNCOMMITTED**: 最低的隔离级别，**允许读取尚未提交的数据变更**，可能会导致**脏读、幻读或不可重复读** ；
+- **TransactionDeﬁnition.ISOLATION_READ_COMMITTED**: **允许读取并发事务已经提交的数据**，可以**阻止脏读，但是幻读或不可重复读仍有可能发生** ；
+- **TransactionDeﬁnition.ISOLATION_REPEATABLE_READ**: **对同一字段的多次读取结果都是一致的**，除非数据是被本身事务自己所修改，可以**阻止脏读和不可重复读，但幻读仍有可能发生**。 
+- **TransactionDeﬁnition.ISOLATION_SERIALIZABLE**: 最高的隔离级别，完全服从ACID的隔离级别。**所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰**，也就是说，该级别**可以防止脏读、不可重复读以及幻读**。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
 
 ### 3.SpringMVC 原理了解吗?
 
