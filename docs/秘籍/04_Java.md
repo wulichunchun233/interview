@@ -1,4 +1,4 @@
-## 基础
+# 基础
 
 ### 1.为什么要用单例模式?手写几种线程安全的单例模式?
 
@@ -6,6 +6,13 @@
 
 - 对于频繁使用的对象，可以省略创建对象所花费的时间，这对于那些重量级对象而言，是非常可观的一笔系统开销； 
 - 由于 new 操作的次数减少，因而对系统内存的使用频率也会降低，这将减轻 GC 压力，缩短 GC 停顿时间。
+
+首先我们要先了解下单例的四大原则：
+
+1. 构造私有。
+2. 以静态方法或者枚举返回实例。
+3. 确保实例只有一个，尤其是多线程环境。
+4. 确保反序列换时不会重新构建对象。
 
 补充：（类加载的过程）
 
@@ -55,9 +62,33 @@ public class Singleton{
 
 **静态内部类方式**
 
-静态内部实现的单例是**懒加载的且线程安全**。
+静态内部实现的单例是**懒加载的且线程安全（这也是他的优点）**。
 
 只有通过显式调用 getInstance 方法时，才会显式装载 SingletonHolder 类，从而实例化 instance（只有第一次使用这个单例的实例的时候才加载，同时不会有线程安全问题）。
+
+静态内部类的优点是：**外部类加载时并不需要立即加载内部类，内部类不被加载则不去初始化INSTANCE，故而不占内存**。即当SingleTon第一次被加载时，并不需要去加载SingleTonHoler，只有当getInstance()方法第一次被调用时，才会去初始化INSTANCE,第一次调用getInstance()方法会导致虚拟机加载SingleTonHoler类，**这种方法不仅能确保线程安全，也能保证单例的唯一性，同时也延迟了单例的实例化**。
+
+那么，静态内部类又是如何实现线程安全的呢？首先，我们先了解下类的加载时机。
+
+类加载时机：
+
+JAVA虚拟机在有且仅有的5种场景下会对类进行初始化。
+
+1. 遇到new、getstatic、setstatic或者invokestatic这4个字节码指令时，对应的java代码场景为：new一个关键字或者一个实例化对象时、读取或设置一个静态字段时(final修饰、已在编译期把结果放入常量池的除外)、调用一个类的静态方法时。
+2. 使用java.lang.reflect包的方法对类进行反射调用的时候，如果类没进行初始化，需要先调用其初始化方法进行初始化。
+3. 当初始化一个类时，如果其父类还未进行初始化，会先触发其父类的初始化。
+4. 当虚拟机启动时，用户需要指定一个要执行的主类(包含main()方法的类)，虚拟机会先初始化这个类。
+5. 当使用JDK 1.7等动态语言支持时，如果一个java.lang.invoke.MethodHandle实例最后的解析结果REF_getStatic、REF_putStatic、REF_invokeStatic的方法句柄，并且这个方法句柄所对应的类没有进行过初始化，则需要先触发其初始化。、
+
+这5种情况被称为是类的主动引用，注意，这里《虚拟机规范》中使用的限定词是"有且仅有"，那么，除此之外的所有引用类都不会对类进行初始化，称为被动引用。静态内部类就属于被动引用的行列。
+
+我们再回头看下getInstance()方法，调用的是SingleTonHoler.INSTANCE，取的是SingleTonHoler里的INSTANCE对象，跟上面那个DCL方法不同的是，getInstance()方法并没有多次去new对象，故不管多少个线程去调用getInstance()方法，取的都是同一个INSTANCE对象，而不用去重新创建。
+
+当getInstance()方法被调用时，SingleTonHoler才在SingleTon的运行时常量池里，把符号引用替换为直接引用，这时静态对象INSTANCE也真正被创建，然后再被getInstance()方法返回出去，这点同饿汉模式。那么INSTANCE在创建过程中又是如何保证线程安全的呢？在《深入理解JAVA虚拟机》中，有这么一句话:
+
+ 虚拟机会保证一个类的<clinit>()方法在多线程环境中被正确地加锁、同步，如果多个线程同时去初始化一个类，那么只会有一个线程去执行这个类的<clinit>()方法，其他线程都需要阻塞等待，直到活动线程执行<clinit>()方法完毕。如果在一个类的<clinit>()方法中有耗时很长的操作，就可能造成多个进程阻塞(需要注意的是，其他线程虽然会被阻塞，但如果执行<clinit>()方法后，其他线程唤醒之后不会再次进入<clinit>()方法。同一个加载器下，一个类型只会初始化一次。)，在实际应用中，这种阻塞往往是很隐蔽的。
+
+故而，可以看出INSTANCE在创建过程中是线程安全的，所以说静态内部类形式的单例可保证线程安全，也能保证单例的唯一性，同时也延迟了单例的实例化。
 
 ```java
 public class Singleton{
@@ -67,6 +98,7 @@ public class Singleton{
         private static final Singleton INSTANCE = new Singleton();
     }
     private Single(){}
+    // 注意这里有final
     public static final Singleton getInstance(){
         // 只有通过显式调用 getInstance 方法时，才会显式装载 SingletonHolder 类，从而实例化 instance
         return SingletonHolder.INSTANCE;
@@ -134,15 +166,15 @@ Java的反射机制是java被称为动态语言的一个关键性质。
 
 ### 3.类装载器介绍？
 
-**ClassLoader类装载器**就是寻找类的字节码文件并构造出类在  JVM 内部表示的对象组件。主要工作由ClassLoader及其子类负责，ClassLoader是一个重要的 Java运行时系统组件，它负责在运行时查找和装入 Class 字节码文件。
+**ClassLoader类装载器**就是寻找类的字节码文件并构造出类在  JVM 内部表示的对象组件。
+
+主要工作由ClassLoader及其子类负责，ClassLoader是一个重要的 Java运行时系统组件，它负责在运行时查找和装入 Class 字节码文件。
 
 在 JAVA中 java 虚拟机把一个类装入到 java 虚拟机当中需要经过以下的步骤：
 
 1. **装载**：查找和导入Class文件。
 
-2. **链接**：执行校验，准备和解析步骤。
-
-其中校验主要是检查载入class文件数据的正确性，而准备工作就是给类的静态变量来分配存储空间，解析则是将符号引用来转变成直接引用。
+2. **链接**：执行校验，准备和解析步骤。其中校验主要是检查载入class文件数据的正确性，而准备工作就是给类的静态变量来分配存储空间，解析则是将符号引用来转变成直接引用。
 
 3. **初始化**：对类的静态变量、静态代码块执行初始化工作。
 
@@ -152,7 +184,7 @@ JVM装载类时使用**全盘负责委托机制**
 
 **全盘负责**：当一个ClassLoader装载一个类的时候，除非显式的使用另一个ClassLoader，否则该类所依赖即引用的类也由这个ClassLoader来载入。
 
-**委托机制**：先委托父装载器寻找目标类，只有在找不到的情况下才从自己的类路径中查找并装载目标类。这一点是从安全角度来考虑的。
+**委托机制**：先委托父装载器寻找目标类，只有在找不到的情况下才从自己的类路径中查找并装载目标类。这一点是从**安全**角度来考虑的。
 
 JVM在运行时会产生三个装载器字节码文件：**根装载器、ExtClassLoader（扩展类装载器）和AppClassLoader（系统类装载器）**。
 
@@ -164,7 +196,7 @@ JVM在运行时会产生三个装载器字节码文件：**根装载器、ExtCla
 
 根装载器是ExtClassLoader的父装载器，而ExtClassLoader是AppClassLoader的父装载器。
 
-在默认情况下使用AppClassLoader装载应用程序的类。
+在默认情况下**使用AppClassLoader装载应用程序的类**。
 
 ### 4.Java当中的class对象是什么？有几种获取的方法？
 
@@ -176,7 +208,7 @@ Class对象的常用方法介绍：
 - getDeclaredFields()    获得类中的所有属性
 - getDeclaredMethods()     获得类中所有的方法
 - getConstructors()     获得类构造方法
-- newInstance()     实例化类对象注：newInstance()方法为实例化空参数的类对象时使用。
+- newInstance()     实例化类对象，注：newInstance()方法为实例化空参数的类对象时使用。
 
 获取Class对象的有三种方法：
 
@@ -220,7 +252,7 @@ protected void finalize() throws Throwable { }//实例被垃圾回收器回收�
 
 **hashCode()** 的作用是获取哈希码，也称为散列码；它实际上是返回一个int整数。这个哈希码的作用是确定该对象在哈希表中的索引位置。hashCode() 定义在JDK的Object.java中，这就意味着Java中的任何类都包含有hashCode() 函数。另外需要注意的是： Object 的 hashcode 方法是本地方法，也就是用 c 语言或 c++ 实现的，该方法通常用来将 对象的内存地址 转换为整数之后返回。
 
-HashSet 中保存数据的时候会首先调用 **hashCode** 方法获取对象 hashcode 值，然后和已经保存的数据的 hashcode 进行比较，假如出现重复的话就得继续调用 **equals** 方法来检查 hashcode 相同的两个对象是否内存地址也一致，如何继续相同则证明两个对象时同一个对象，因此 hashSet 就不会让其加入。如果不同的话就证明是 hashcode 出现冲突，则散列到其他位置即可。这样就大大减少了调用 equals 的次数，也就大大提高了执行速度。
+HashSet 中保存数据的时候会首先调用 **hashCode** 方法获取对象 hashcode 值，然后和已经保存的数据的 hashcode 进行比较，假如出现重复的话就得继续调用 **equals** 方法来检查 hashcode 相同的两个对象是否内存地址也一致，如何继续相同则证明两个对象是同一个对象，因此 hashSet 就不会让其加入。如果不同的话就证明是 hashcode 出现冲突，则散列到其他位置即可。这样就大大减少了调用 equals 的次数，也就大大提高了执行速度。
 
 hashCode()与equals()的相关关系：
 
@@ -248,9 +280,9 @@ hashCode()与equals()的相关关系：
 
 ### 9.String 和 StringBuﬀer、StringBuilder 的区别是什么？String 为什 么是不可变的？
 
-- String为不可变类型，因为 String 类使用 **final关键字修饰的字符数组保存字符串**；StringBuffer、StringBuilder为可变类型，也是使用字符数组，但没有 final 关键字修饰。
-- String、StringBuffer 是线程安全的，String是不可变类型所以线程安全，StringBuffer对方法添加了**同步锁**所以是线程安全的。；StringBuilder 是线程不安全的。
-- String每次改变都会产生一个新的 String 对象，性能较低；StringBuffer、StringBuilder直接对对象本身进行操作，因此性能高。
+- **可变**：String为不可变类型，因为 String 类使用 **final关键字修饰的字符数组保存字符串**；StringBuffer、StringBuilder为可变类型，也是使用字符数组，但没有 final 关键字修饰。
+- **线程安全**：String、StringBuffer 是线程安全的，String是不可变类型所以线程安全，StringBuffer对方法添加了**同步锁**所以是线程安全的。；StringBuilder 是线程不安全的。
+- **性能**：String每次改变都会产生一个新的 String 对象，性能较低；StringBuffer、StringBuilder直接对对象本身进行操作，因此性能高。
 
 ### 10.自动装箱与拆箱
 
