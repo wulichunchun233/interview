@@ -2,7 +2,21 @@
 
 ### 0.什么是Spring
 
-Spring 是一个开源框架，是为了解决企业应用程序开发复杂性而创建的。框架的主要优势之一就是其分层架构，分层架构允许您选择使用哪一个组件，同时为 J2EE 应用程序开发提供集成的框架。Spring使用基本的JavaBean来完成以前只可能由EJB完成的事情。任何 Java 应用都可以从 Spring 中受益。Spring 的核心是**控制反转（IoC）和面向切面（AOP）**。简单来说，Spring 是一个分层的 JavaSE/EE full-stack(一站式) **轻量级开源框架**。
+Spring是一个轻量级控制反转(IOC)和面向切面(AOP)的容器框架。主要是为了解决企业应用开发的复杂性而诞生的，框架的主要优势之一就是其分层结构，分层结构允许使用者使用哪一个组件。同时也为J2EE开发提供了集成的框架。
+
+![](https://img-blog.csdn.net/20160518231149640?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
+
+Spring的核心模块：
+
+- **核心容器(SpringCore)**：提供了Spring框架的基本功能，核心容器的主要组件是BeanFactory，他是工厂模式的实现。Bean Factory使用控制反转的模式将应用程序的配置和依赖性规范与实际的应用程序代码相分开。
+- **应用上下文(SpringContext)**：是一个配置文件，向Spring模块提供上下文信息。Spring上下文包含了一些企业服务，例如：JNDI、EJB、电子邮件、国际化、校验、调度等功能。
+- **AOP模块(Spring AOP)** ：通过配置管理特性，Spring AOP模块直接将面向切面的编程功能集成到了Spring框架当中。所以，可以很容易的使Spring框架管理的任何对象都可以支持AOP。Spring的AOP模块为基于Spring的应用程序中的对象提供了事物管理功能，通过使用Spring AOP不用依赖EJB组件就可以将声明性事物管理集成到应用程序当中。
+- **JDBC和DAO模块(Spring DAO)**：JDBC、DAO的抽象层提供了有意义的异常层次结构,可用该结构来管理异常处理和不同数据库供应商所抛出的异常信息。异常层次结构简化了错误处理,并且极大的降低了需要编写的异常处理代码数量。例如打开和关闭连接等等。SpringDAO的面向切面，JDBC的异常遵从通用的DAO异常层次结构。
+- **对象实体映射（SpringORM）**:Spring框架插入了若干个ORM框架，从而提供了ORM对象的关系工具。其中包括JDO、Hibernate… …所有这些都遵从Spring的通用事物和DAO异常层次结构。
+- **Web模块(Spring Web)**：Web上下文模块建立在应用程序上下文模块之上,为基于Web的应用程序提供了上下文，所以Spring框架支持与Struts的集成。Web模块还简化了处理多部分请求以及将请求参数绑定到预对象的操作。
+- **MVC模块(Spring WebMVC)**：Spring的MVC是一个全功能的构建Web应用程序的MVC的实现。通过策略接口,MVC框架变成为高度可配置的。MVC容纳了大量视图技术。模型来由JavaBean来构成，存放与Map当中。而视图是一个接口，负责实现模型。控制器是一个逻辑代码，是Control的实现。
+
+Spring 的核心是**控制反转（IoC）和面向切面（AOP）**。
 
 IoC 不是一种技术，只是一种思想，一个重要的面向对象编程的法则，它能指导我们如何设计出松耦合、更优良的程序。
 
@@ -84,9 +98,32 @@ TransactionDeﬁnition 接口中定义了**五个**表示隔离级别的常量�
 
 ### 3.SpringMVC 原理了解吗?
 
-![20](/Users/wx/project/interview/docs/秘籍/images/20.png)
+原先的Web开发模型是MVC模式的：
 
-客户端发送请求 ->  前端控制器 DispatcherServlet 接受客户端请求  ->  找到处理器映射 HandlerMapping 解析请求对应的 Handler ->  HandlerAdapter 会根据 Handler 来调用真正的处理器（Controller）开始处理请求，并处理相应的业务逻辑（Service）  ->  处理器返回一个模型视图 ModelAndView  ->  视图解析器进行解析  ->  返回一个视图对象 -> 前端控制器 DispatcherServlet 渲染数据（Model）-> 将得到视图对象返回给用户。
+**M 代表 模型（Model）**
+ 模型是什么呢？ 模型就是数据，就是 dao,bean
+
+**V 代表 视图（View）**
+ 视图是什么呢？ 就是网页, JSP，用来展示模型中的数据
+
+**C 代表 控制器（controller)**
+ 控制器是什么？ 控制器的作用就是把不同的数据(Model)，显示在不同的视图(View)上，Servlet 扮演的就是这样的角色。
+
+为解决持久层中一直未处理好的数据库事务的编程，又为了迎合 NoSQL 的强势崛起，Spring MVC 给出了方案：
+
+![](./images/65.png)
+
+**传统的模型层被拆分为了业务层(Service)和数据访问层（DAO,Data Access Object）。** 在 Service 下可以通过 Spring 的声明式事务操作数据访问层，而在业务层上还允许我们访问 NoSQL ，这样就能够满足异军突起的 NoSQL 的使用了，它可以大大提高互联网系统的性能。
+
+也就是说**SpringMVC就是将原先的MVC结构变为了Controller、Service、Dao三层**。
+
+SpringMVC的实现原理？SpringMVC的访问流程？
+
+![66](./images/66.png)
+
+首先客户端发送过来请求交由**前端控制器 DispatcherServlet** 进行处理，然后 DispatcherServlet 找到处理器映射来解析请求，之后会调用对应的 Controller 来处理请求，并执行响应的 Service 业务逻辑，执行完之后会返回一个模型试图 ModelAndView，然后将其交由对应的是图解析器进行解析，然后返回一个试图对象，最后前段控制器会对试图进行渲染，然后将试图进行返回。
+
+这就是SpringMVC的实现原理，主要就是前端控制器 DispatcherServlet 发挥主要的工作，然后分别调用对应的 Controller、Service等创建视图，然后对视图进行渲染并返回。这也是 SpringMVC 接受请求所对应的执行过程。
 
 ### 4.Spring AOP IOC 实现原理？
 
@@ -105,7 +142,25 @@ AOP可以说是对OOP的补充和完善。OOP引入封装、 继承和多态性�
 - 采用**动态代理技术**，利用截取消息的方式，对该消息进行装饰，以取代原有对象行为的执行；
 - 采用**静态织入**的方式，引入特定的语法创建“方面”，从而使得编译器可以在编译期间织入有关“方面”的代码，属于静态代理。
 
-### 5.Eureka是如何进⾏行行服务注册的？
+### 5.SpringBoot介绍，如何启动一个Springboot工程？
+
+SpringBoot是一个简化Spring项目开发的脚手架工具。
+
+使用 @SpringBootApplication 注解来指定一个 Springboot 微服务的启动入口。在对应的启动入口的 main 方法中使用SpringApplication.run(ManageCourseApplication.class, args);来启动一个 Springboot 工程。
+
+### 6.常见的Spring中的注解？
+
+- SpringBootApplication：标注一个Springboot项目
+- Service：标注业务逻辑
+- Controller：标注视图控制器
+- RestController：标注这是一个返回json对象的视图控制器
+- RequestMapping：指定视图控制器的访问路径
+- Getmapping：指定get请求的路径
+- PostMapping：指定post请求的路径
+- Configuration：指定这是一个配置对象
+- FeignClient：指定feign远程调用的路径
+
+### 7.Eureka是如何进⾏行行服务注册的？
 
 Eureka是Netflix开发的服务发现框架，本身是一个基于REST的服务，主要用于定位运行在AWS域中的中间层服务，以达到负载均衡和中间层服务故障转移的目的。SpringCloud将它集成在其子项目spring-cloud-netflix中，以实现SpringCloud的服务发现功能。
 
@@ -127,14 +182,41 @@ Eureka服务端支持集群模式部署，首尾相连形成一个闭环即可�
 **服务调用**
 服务消费者在获取服务清单后，通过服务名可以获取具体提供服务的实例名和该实例的元数据信息。因为有这些服务实例的详细信息，所以客户端可以根据自己的需要决定具体调用哪个实例，在Ribbon中会默认采用轮询的方式进行调用，从而实现客户端的负载均衡。
 
-### 6.如果服务宕机或者⽆无法访问了了，我还去请求该服务，Eureka会怎么处理？ 会有什么现象？
+### 8.如果服务宕机或者⽆无法访问了了，我还去请求该服务，Eureka会怎么处理？ 会有什么现象？
 
 当服务提供者出现网络故障，无法与 Eureka Server 进行续约，Eureka Server 会将该实例移除。
 
 会报服务不存在的错误。
 
-### 7.Eureka自我保护模式
+### 9.Eureka自我保护模式
 
 Eureka Server 的自我保护机制会检查最近`15分钟`内所有Eureka Client正常心跳的占比，如果低于`85%`就会被触发。
 
 当触发自我保护机制后Eureka Server就会锁定服务列表，不让服务列表内的服务过期，不过这样我们在访问服务时，得到的服务很有可能是已经失效的实例，如果是这样我们就会无法访问到期望的资源，会导致服务调用失败，所以这时我们就需要有对应的容错机制、熔断机制。
+
+### ==10.Transactional注解是什么？可能会带来的问题？==
+
+**1）什么是Transactional注解**
+
+在Spring中@Transactional提供一种声明式控制事务管理的方式，基于AOP动态代理的机制，提供了一种透明的事务管理方式，方便快捷解决在开发中碰到的问题。
+
+一般在service里加@Transactional注解，不建议在接口上添加。添加了注解之后会对加了此注解后每个业务方法执行时，都会开启一个事务，不过都是按照相同的管理机制。
+
+**2）Transactional注解会带来什么问题？**
+
+Transactional会导致事务失效的问题发生，可能会发生事务失效的场景有如下几个：
+
+1、**@Transactional注解只能应用到public修饰符上，应用在其它修饰符上会失效，但不报错**。可以**使用 AspectJ 取代 Spring AOP** 代理来解决。
+
+2、**默认情况下此注解会对unchecked异常进行回滚，对checked异常不回滚。**（java里面将派生于Error或者RuntimeException（比如空指针，除0）的异常称为unchecked异常，其他继承自java.lang.Exception得异常统称为Checked Exception，如IOException、TimeoutException等。也就是说编译器能检测到的是checked，检测不到的就是unchecked）
+
+3、**同类方法调用，假如被同类其他没有使用 Transactional 注解注释的方法去调用一个注释了 Transactional 注解的方法会导致这个 Transactional 注释失效。**这是由于使用 Spring AOP 代理造成的，因为只有当事务方法被当前类以外的代码调用时，才会由Spring生成的代理对象来管理。可以**使用 AspectJ 取代 Spring AOP** 代理来解决。
+
+4、**事务 propagation（事务传播行为）属性配置出错**。若是错误的配置以下三种 propagation，事务将不会发生回滚：**TransactionDefinition.PROPAGATION_SUPPORTS**：如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。** TransactionDefinition.PROPAGATION_NOT_SUPPORTED**：以非事务方式运行，如果当前存在事务，则把当前事务挂起。 **TransactionDefinition.PROPAGATION_NEVER**：以非事务方式运行，如果当前存在事务，则抛出异常。
+
+5、**在 Transaction 注解中使用 try-catch**，catch会将异常进行处理，导致Transactional不会捕获到对应的异常。
+
+6、**数据库引擎设置出错**，数据库引擎 MyISAM不支持事务，只有 InnoDB 是支持事务的。
+
+
+
