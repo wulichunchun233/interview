@@ -1,8 +1,8 @@
 # Spring
 
-### 0.什么是Spring
+### 1.什么是Spring
 
-Spring是一个轻量级控制反转(IOC)和面向切面(AOP)的容器框架。主要是为了解决企业应用开发的复杂性而诞生的，框架的主要优势之一就是其分层结构，分层结构允许使用者使用哪一个组件。同时也为J2EE开发提供了集成的框架。
+**Spring是一个轻量级控制反转(IOC)和面向切面(AOP)的容器框架**。主要是为了解决企业应用开发的复杂性而诞生的，框架的主要优势之一就是其分层结构，分层结构允许使用者使用哪一个组件。同时也为J2EE开发提供了集成的框架。
 
 ![](https://img-blog.csdn.net/20160518231149640?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
 
@@ -22,110 +22,7 @@ IoC 不是一种技术，只是一种思想，一个重要的面向对象编程�
 
 AOP即**Aspect-Oriented programming**的缩写，中文意思是面向切面（或方面）编程。他是一种思想，可在不改变程序源码的情况下为程序添加额外的功能。
 
-### ==1.简单介绍一下 Spring bean ;知道 Spring 的 bean 的作用域与生命周期吗?==
-
-在 Spring 中，那些组成**应用程序的主体及由 Spring IOC（控制反转） 容器所管理的对象**，被称之为 bean。
-
-简单地讲，bean 就是**由 IOC 容器初始化、装配及管理的对象**，除此之外，bean 就与应用程序中的其他对象没有什么区别了。
-
-而 bean 的定义以及 bean 相互间的依赖关系将通过**配置元数据**来描述。
-
-Spring中的bean默认都是**单例**的，这些单例Bean在多线程程序下如何保证线程安全呢？ 例如对于Web应用来说， Web容器对于每个用户请求都创建一个单独的Sevlet线程来处理请求，引入Spring框架之后，每个Action都是单例的，那么对于 Spring 托管的单例 Service Bean，如何保证其安全呢？ 
-
-Spring 的单例是**基于 BeanFactory 也就是 Spring 容器**的，单例 Bean 在此**容器内只有一个**，Java的单例是基于 JVM，每个 JVM 内只有一个实例。
-
-**作用域一般指对象或变量之间的可见范围。**
-
-而在Spring容器中**是指其创建的Bean对象相对于其他Bean对象的请求可见范围**。
-
-在Spring 容器当中，一共提供了5种作用域类型，在配置文件中，通过属性scope来设置bean的作用域范围。
-
-![18](/Users/wx/project/interview/docs/秘籍/images/18.png)
-
-Spring 容器可以管理 singleton 作用域下 bean 的生命周期，在此作用域下，Spring 能够精确地知道bean何时被创建，何时初始化完成，以及何时被销毁。而对于 prototype 作用域的bean，Spring只负责创建，当容器创建了 bean 的实例后，bean 的实例就交给了客户端的代码管理，Spring容器将不再跟踪其生命周期，并且不会管理那些被配置成prototype作用域的bean的生命周期。
-
-Spring Bean的生命周期是这样的：
-
-- Bean容器找到配置文件中 Spring Bean 的定义。
-- Bean容器利用 Java Reflection API 创建一个Bean的实例。
-- 如果涉及到一些属性值利用set方法设置一些属性值。
-- 如果Bean实现了BeanNameAware接口，调用setBeanName()方法，传入Bean的名字。
-- 如果Bean实现了BeanClassLoaderAware接口，调用setBeanClassLoader()方法，传入ClassLoader对象的实例。
-- 如果Bean实现了BeanFactoryAware接口，调用setBeanClassLoader()方法，传入ClassLoader对象的实例。
-- 与上面的类似，如果实现了其他*Aware接口，就调用相应的方法。
-- 如果有和加载这个Bean的Spring容器相关的BeanPostProcessor对象，执行postProcessBeforeInitialization()方法
-- 如果Bean实现了InitializingBean接口，执行afterPropertiesSet()方法。
-- 如果Bean在配置文件中的定义包含init-method属性，执行指定的方法。
-- 如果有和加载这个Bean的Spring容器相关的BeanPostProcessor对象，执行postProcessAfterInitialization()方法
-- 当要销毁Bean的时候，如果Bean实现了DisposableBean接口，执行destroy()方法。
-- 当要销毁Bean的时候，如果Bean在配置文件中的定义包含destroy-method属性，执行指定的方法。
-
-![19](/Users/wx/project/interview/docs/秘籍/images/19.png)
-
-### 2.Spring 中的事务传播行为了解吗? TransactionDeﬁnition 接口中哪五个表示隔离级别的常量?
-
-**事务传播行为**
-
-事务传播行为（为了解决业务层方法之间互相调用的事务问题）： **当事务方法被另一个事务方法调用时，必须指定事务应该如何传播**。例如：方法可能继续在现有事务中运行，也可能开启一个新事务，并在自己的事务中运行。
-
-在 TransactionDeﬁnition定义中包括了如下几个表示传播行为的常量：
-
-**支持当前事务的情况：**
-
-- **TransactionDeﬁnition.PROPAGATION_REQUIRED**： 如果当前存在事务，则加入该事务；如果当前没有事务， 则创建一个新的事务。
-- **TransactionDeﬁnition.PROPAGATION_SUPPORTS**： 如果当前存在事务，则加入该事务；如果当前没有事务， 则以非事务的方式继续运行。 
-- **TransactionDeﬁnition.PROPAGATION_MANDATORY**： 如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。（mandatory：强制性）
-
-**不支持当前事务的情况：**
-
-- **TransactionDeﬁnition.PROPAGATION_REQUIRES_NEW**： 创建一个新的事务，如果当前存在事务，则把当前事务挂起。 
-- **TransactionDeﬁnition.PROPAGATION_NOT_SUPPORTED**： 以非事务方式运行，如果当前存在事务，则把当前事务挂起。 
-- **TransactionDeﬁnition.PROPAGATION_NEVER**： 以非事务方式运行，如果当前存在事务，则抛出异常。
-
-**其他情况：**
-
-- **TransactionDeﬁnition.PROPAGATION_NESTED**： 如果当前存在事务，则创建一个事务作为当前事务的嵌套事 务来运行；如果当前没有事务，则该取值等价于TransactionDeﬁnition.PROPAGATION_REQUIRED。
-
-**隔离级别**
-
-TransactionDeﬁnition 接口中定义了**五个**表示隔离级别的常量（后四个分别对应于mysql的事物隔离级别）：
-
-- **TransactionDeﬁnition.ISOLATION_DEFAULT**: 使用后端数据库默认的隔离级别，Mysql 默认采用的 **REPEATABLE_READ** 隔离级别（加锁之后可以实现到SERIALIZABLE级别） Oracle 默认采用的 READ_COMMITTED隔离级别；
-- **TransactionDeﬁnition.ISOLATION_READ_UNCOMMITTED**: 最低的隔离级别，**允许读取尚未提交的数据变更**，可能会导致**脏读、幻读或不可重复读** ；
-- **TransactionDeﬁnition.ISOLATION_READ_COMMITTED**: **允许读取并发事务已经提交的数据**，可以**阻止脏读，但是幻读或不可重复读仍有可能发生** ；
-- **TransactionDeﬁnition.ISOLATION_REPEATABLE_READ**: **对同一字段的多次读取结果都是一致的**，除非数据是被本身事务自己所修改，可以**阻止脏读和不可重复读，但幻读仍有可能发生**。 
-- **TransactionDeﬁnition.ISOLATION_SERIALIZABLE**: 最高的隔离级别，完全服从ACID的隔离级别。**所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰**，也就是说，该级别**可以防止脏读、不可重复读以及幻读**。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
-
-### ==3.SpringMVC 原理了解吗?==
-
-原先的Web开发模型是MVC模式的：
-
-**M 代表 模型（Model）**
- 模型是什么呢？ 模型就是数据，就是 dao,bean
-
-**V 代表 视图（View）**
- 视图是什么呢？ 就是网页, JSP，用来展示模型中的数据
-
-**C 代表 控制器（controller)**
- 控制器是什么？ 控制器的作用就是把不同的数据(Model)，显示在不同的视图(View)上，Servlet 扮演的就是这样的角色。
-
-为解决持久层中一直未处理好的数据库事务的编程，又为了迎合 NoSQL 的强势崛起，Spring MVC 给出了方案：
-
-![](./images/65.png)
-
-**传统的模型层被拆分为了业务层(Service)和数据访问层（DAO,Data Access Object）。** 在 Service 下可以通过 Spring 的声明式事务操作数据访问层，而在业务层上还允许我们访问 NoSQL ，这样就能够满足异军突起的 NoSQL 的使用了，它可以大大提高互联网系统的性能。
-
-也就是说**SpringMVC就是将原先的MVC结构变为了Controller、Service、Dao三层**。
-
-SpringMVC的实现原理？SpringMVC的访问流程？
-
-![66](./images/66.png)
-
-首先客户端发送过来请求交由**前端控制器 DispatcherServlet** 进行处理，然后 DispatcherServlet 找到处理器映射来解析请求，之后会调用对应的 Controller 来处理请求，并执行响应的 Service 业务逻辑，执行完之后会返回一个模型试图 ModelAndView，然后将其交由对应的是图解析器进行解析，然后返回一个试图对象，最后前段控制器会对试图进行渲染，然后将试图进行返回。
-
-这就是SpringMVC的实现原理，主要就是前端控制器 DispatcherServlet 发挥主要的工作，然后分别调用对应的 Controller、Service等创建视图，然后对视图进行渲染并返回。这也是 SpringMVC 接受请求所对应的执行过程。
-
-### ==4.Spring AOP IOC 实现原理？==
+### ==2.Spring AOP IOC 实现原理？==
 
 spring核心框架里面，最关键的两个机制，就是 ioc 和 aop。
 
@@ -157,77 +54,61 @@ IOC底层利用**java反射机制**，利用反射的技术，会直接根据类
 
 Spring AOP利用**动态代理技术**，生成代理对象，利用截取消息的方式，对该消息进行装饰，以取代原有对象行为的执行。
 
-动态代理：动态的创建一个代理类，在创建代理类的实例对象，然后在代理类的实例对象里引用自己写的类，所有的方法调用都会先走代理类对象，负责做一些代码上的增强，再去调用自己写的类。
+**动态代理**：动态的创建一个**代理类**，在创建代理类的**实例对象**，然后在代理类的实例对象里引用自己写的类，所有的方法调用都会先走代理类对象，负责做一些代码上的增强，再去调用自己写的类。
 
 动态代理的实现技术：**cglib动态代理、jdk动态代理**。
 
 **5）cglib、jdk动态代理的区别**
 
-主要的区别是根据 Spring 生成动态代理类的形式有关的。
+主要的区别是根据 **Spring 生成动态代理类的形式**有关的。
 
 如果需要动态代理的类**实现了某个接口**，那么Spring aop会使用**jdk动态代理**生成一个实现同样接口的一个代理类，然后构造一个实例对象出来。也就是说**jdk动态代理只有在类有接口的时候才会使用**。
 
 假如需要动态代理的类**没有实现接口**，spring aop则会该用**cglib动态代理**来生成该类的一个子类，该子类可以动态的生成字节码，然后重写一些原有的方法，在方法中加入增强的代码。
 
-### 5.SpringBoot介绍，如何启动一个Springboot工程？
+### ==3.Spring bean？知道 Spring 的 bean 的作用域与生命周期吗?Spring bean 是线程安全的吗？==
 
-SpringBoot是一个简化Spring项目开发的脚手架工具。
+**1）Spring bean 介绍**
 
-使用 @SpringBootApplication 注解来指定一个 Springboot 微服务的启动入口。在对应的启动入口的 main 方法中使用SpringApplication.run(ManageCourseApplication.class, args);来启动一个 Springboot 工程。
+在 Spring 中，那些组成**应用程序的主体及由 Spring IOC（控制反转） 容器所管理的对象**，被称之为 bean。
 
-### 6.常见的Spring中的注解？
+Spring中的bean默认都是**单例**的，**基于 BeanFactory 也就是 Spring 容器**的，单例 Bean 在此**容器内只有一个**，Java的单例是基于 JVM，每个 JVM 内只有一个实例。
 
-- SpringBootApplication：标注一个Springboot项目
-- Service：标注业务逻辑
-- Controller：标注视图控制器
-- RestController：标注这是一个返回json对象的视图控制器
-- RequestMapping：指定视图控制器的访问路径
-- Getmapping：指定get请求的路径
-- PostMapping：指定post请求的路径
-- Configuration：指定这是一个配置对象
-- FeignClient：指定feign远程调用的路径
+Spring bean 的生命周期：
 
-### 7.Eureka是如何进⾏行行服务注册的？
+![](https://images0.cnblogs.com/i/580631/201405/181453414212066.png)
 
-Eureka是Netflix开发的服务发现框架，本身是一个基于REST的服务，主要用于定位运行在AWS域中的中间层服务，以达到负载均衡和中间层服务故障转移的目的。SpringCloud将它集成在其子项目spring-cloud-netflix中，以实现SpringCloud的服务发现功能。
+![](https://images0.cnblogs.com/i/580631/201405/181454040628981.png)
 
-Eureka包含两个组件：Eureka Server和Eureka Client。
 
-调用关系说明：
 
-1.服务提供者在启动时，向注册中心注册自己提供的服务。
- 2.服务消费者在启动时，向注册中心订阅自己所需的服务。
- 3.注册中心返回服务提供者地址给消费者。
- 4.服务消费者从提供者地址中调用消费者。
- 注意！ 下面的服务端指：注册中心，客户端指：服务提供者和消费者
+**2）Spring bean作用域**
 
-**Eureka Server**：提供服务注册服务，各个节点启动后，会在Eureka Server中进行注册，包括**主机与端口号、服务版本号、通讯协议**等。这样EurekaServer中的**服务注册表**中将会存储所有可用服务节点的信息，服务节点的信息可以在界面中直观的看到。
-Eureka服务端支持集群模式部署，首尾相连形成一个闭环即可，集群中的的不同服务注册中心通过**异步模式**互相复制各自的状态，这也意味着在给定的时间点每个实例关于所有服务的状态可能存在不一致的现象。
+在Spring 容器当中，一共提供了5种作用域类型，在配置文件中，通过属性scope来设置bean的作用域范围。
 
-**eureka客户端**，主要处理服务的注册和发现。客户端服务通过注册和参数配置的方式，嵌入在客户端应用程序的代码中。在应用程序启动时，Eureka客户端向服务注册中心注册自身提供的服务，并周期性的发送**心跳**来更新它的服务租约。同时，他也能从服务端查询当前注册的服务信息并把它们缓存到本地并周期性的刷新服务状态。
+![18](/Users/wx/project/interview/docs/秘籍/images/18.png)
 
-**服务调用**
-服务消费者在获取服务清单后，通过服务名可以获取具体提供服务的实例名和该实例的元数据信息。因为有这些服务实例的详细信息，所以客户端可以根据自己的需要决定具体调用哪个实例，在Ribbon中会默认采用轮询的方式进行调用，从而实现客户端的负载均衡。
+Spring 容器可以管理 **singleton** 作用域下 bean 的生命周期，在此作用域下，Spring 能够精确地知道bean何时被创建，何时初始化完成，以及何时被销毁。
 
-### 8.如果服务宕机或者⽆无法访问了了，我还去请求该服务，Eureka会怎么处理？ 会有什么现象？
+而对于 **prototype** 作用域的bean，Spring 为每一个 bean 请求创建一个实例。
 
-当服务提供者出现网络故障，无法与 Eureka Server 进行续约，Eureka Server 会将该实例移除。
+一般来说下面几种作用域，开始的时候都不会去用，默认都是使用**singleton**。
 
-会报服务不存在的错误。
+**3）Spring bean 是线程安全的吗？**
 
-### 9.Eureka自我保护模式
+Spring bean 默认来说是**线程不安全**的。（只有使用默认的单例作用域的时候才是不安全的）
 
-Eureka Server 的自我保护机制会检查最近`15分钟`内所有Eureka Client正常心跳的占比，如果低于`85%`就会被触发。
+因为 bean 会被多线程并发访问，假如bean中有自己的实例变量，但是 bean 中没有相应的并发安全设置，也就导致 bean 是线程不安全的。
 
-当触发自我保护机制后Eureka Server就会锁定服务列表，不让服务列表内的服务过期，不过这样我们在访问服务时，得到的服务很有可能是已经失效的实例，如果是这样我们就会无法访问到期望的资源，会导致服务调用失败，所以这时我们就需要有对应的容错机制、熔断机制。
+但是一般来说很少会在 bean 中放置实例变量，因为 bean 之间是相互调用的，最终都是去访问数据库的。这样多线程其实最后是去并发的访问数据库了，也就不会因为 bean 是线程不安全的影响整体系统的运行。
 
-### ==10.Transactional注解是什么？可能会带来的问题？==
+### ==4.Spring 的事务实现原理是什么？Spring 中的事务传播行为了解吗? TransactionDeﬁnition 接口中哪五个表示隔离级别的常量?==
 
-**1）什么是Transactional注解**
+**1）Spring 事务实现原理**
 
-在Spring中@Transactional提供一种声明式控制事务管理的方式，基于AOP动态代理的机制，提供了一种透明的事务管理方式，方便快捷解决在开发中碰到的问题。
+在方法上添加 Transactional 注解，此时 Spring 就会使用 **AOP**在这个方法执行前首先开启事务，在执行完毕之后会根据方法是否报错来决定是回滚还是提交事务。
 
-一般在service里加@Transactional注解，不建议在接口上添加。添加了注解之后会对加了此注解后每个业务方法执行时，都会开启一个事务，不过都是按照相同的管理机制。
+
 
 **2）Transactional注解会带来什么问题？**
 
@@ -246,4 +127,137 @@ Transactional会导致**事务失效**的问题发生，可能会发生事务失
 6、**数据库引擎设置出错**，数据库引擎 MyISAM不支持事务，只有 InnoDB 是支持事务的。
 
 
+
+**3）Spring 事务传播行为**
+
+事务传播行为（为了解决业务层方法之间互相调用的事务问题）： **当事务方法被另一个事务方法调用时，必须指定事务应该如何传播**。
+
+例如：方法可能继续在现有事务中运行，也可能开启一个新事务，并在自己的事务中运行。
+
+在 TransactionDeﬁnition定义中包括了如下几个表示传播行为的常量（以事务方法A来调用方法B来举例）：
+
+**支持当前事务的情况：**
+
+- **TransactionDeﬁnition.PROPAGATION_REQUIRED**： 如果当前存在事务，则加入该事务；如果当前没有事务， 则**创建一个新的事务**。这种情况下只会开启一个事务。
+- TransactionDeﬁnition.PROPAGATION_SUPPORTS： 如果当前存在事务，则加入该事务；如果当前没有事务， 则以**非事务**的方式继续运行。 
+- TransactionDeﬁnition.PROPAGATION_MANDATORY： 如果当前存在事务，则加入该事务；如果当前没有事务，则**抛出异常**。（mandatory：强制性）
+
+**不支持当前事务的情况：**
+
+- **TransactionDeﬁnition.PROPAGATION_REQUIRES_NEW**： **创建一个新的事务**，如果当前存在事务，则把当前事务挂起。 这样是两个不同的事务，之前互不影响。
+- TransactionDeﬁnition.PROPAGATION_NOT_SUPPORTED： 以**非事务方式运行**，如果当前存在事务，则把当前事务挂起。 
+- TransactionDeﬁnition.PROPAGATION_NEVER： 以**非事务方式运行**，如果当前存在事务，则**抛出异常**。
+
+**其他情况：**
+
+- **TransactionDeﬁnition.PROPAGATION_NESTED**： 如果当前存在事务，则**创建一个事务作为当前事务的嵌套事务来运行**；如果当前没有事务，则该取值等价于TransactionDeﬁnition.PROPAGATION_REQUIRED。**外层事务回滚会导致外层事务回滚；内层事务回滚不会导致外层事务回滚**。
+
+
+
+**4）Spring 事务隔离级别**
+
+TransactionDeﬁnition 接口中定义了**五个**表示隔离级别的常量（后四个分别对应于mysql的事物隔离级别）：
+
+- **TransactionDeﬁnition.ISOLATION_DEFAULT**: 使用后端数据库默认的隔离级别，Mysql 默认采用的 **REPEATABLE_READ** 隔离级别（加锁之后可以实现到SERIALIZABLE级别） Oracle 默认采用的 READ_COMMITTED隔离级别；
+- **TransactionDeﬁnition.ISOLATION_READ_UNCOMMITTED**: 最低的隔离级别，**允许读取尚未提交的数据变更**，可能会导致**脏读、幻读或不可重复读** ；
+- **TransactionDeﬁnition.ISOLATION_READ_COMMITTED**: **允许读取并发事务已经提交的数据**，可以**阻止脏读，但是幻读或不可重复读仍有可能发生** ；
+- **TransactionDeﬁnition.ISOLATION_REPEATABLE_READ**: **对同一字段的多次读取结果都是一致的**，除非数据是被本身事务自己所修改，可以**阻止脏读和不可重复读，但幻读仍有可能发生**。 
+- **TransactionDeﬁnition.ISOLATION_SERIALIZABLE**: 最高的隔离级别，完全服从ACID的隔离级别。**所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰**，也就是说，该级别**可以防止脏读、不可重复读以及幻读**。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
+
+### ==5.SpringMVC 原理了解吗?==
+
+**1）SpringMVC介绍**
+
+原先的Web开发模型是MVC模式的：
+
+**M 代表 模型（Model）**
+ 模型是什么呢？ 模型就是数据，就是 dao,bean
+
+**V 代表 视图（View）**
+ 视图是什么呢？ 就是网页, JSP，用来展示模型中的数据
+
+**C 代表 控制器（controller)**
+ 控制器是什么？ 控制器的作用就是把不同的数据(Model)，显示在不同的视图(View)上，Servlet 扮演的就是这样的角色。
+
+为解决持久层中一直未处理好的数据库事务的编程，又为了迎合 NoSQL 的强势崛起，Spring MVC 给出了方案：
+
+![](./images/65.png)
+
+**传统的模型层被拆分为了业务层(Service)和数据访问层（DAO,Data Access Object）。** 在 Service 下可以通过 Spring 的声明式事务操作数据访问层，而在业务层上还允许我们访问 NoSQL ，这样就能够满足异军突起的 NoSQL 的使用了，它可以大大提高互联网系统的性能。
+
+也就是说**SpringMVC就是将原先的MVC结构变为了Controller、Service、Dao三层**。
+
+**2）SpringMVC的实现原理？（SpringMVC的访问流程？）**
+
+![66](./images/66.png)
+
+首先客户端发送过来请求交由**前端控制器 DispatcherServlet** 进行处理，然后 **DispatcherServlet** 找到**处理器映射 RequestMapping**来解析请求，之后会调用对应的 **Controller** 来处理请求，并执行响应的 **Service** 业务逻辑，**Service**中会执行**DAO**来进行数据库数据的访问，执行完之后会返回一个模型试图 **ModelAndView**（或者直接返回一个 json 数据到前端工程中去），然后将其交由对应的**视图解析器**进行解析，然后返回一个**试图**对象，最后**前段控制器**会对试图进行渲染，然后将试图进行返回。
+
+这就是SpringMVC的实现原理，主要就是前端控制器 DispatcherServlet 发挥主要的工作，然后分别调用对应的 Controller、Service、DAO等创建视图，然后对视图进行渲染并返回。这也是 SpringMVC 接受请求所对应的执行过程。
+
+### ==6.Spring Boot？如何启动一个Spring Boot工程？Spring Boot 的核心架构？==
+
+**1）Spring Boot**
+
+Spring Boot 是一个简化Spring项目开发的脚手架工具。
+
+本质就是**整合各种框架**， 比如spring + spring mvc + mybits 的一些框架，但是可以一定程度上简化开发流程。
+
+Spring Boot **内嵌一个 tomcat** 来直接运行代码，方便进行开发测试。
+
+Spring Boot 支持**自动装配**，我们只需要引入一个 start，然后 SpringBoot会自动的为我们在项目中引入相应的依赖以及自动的完成一些相应的配置和定义生成相应的bean，然后自动注入。免去一些手动配置和定义 bean 的操作。
+
+
+
+**2）如何启动一个Spring Boot工程**
+
+使用 @SpringBootApplication 注解来指定一个 Springboot 微服务的启动入口。在对应的启动入口的 main 方法中使用SpringApplication.run(ManageCourseApplication.class, args);来启动一个 Springboot 工程。
+
+
+
+**3）Spring Boot的核心架构（启动流程）**
+
+首先启动一个 **Spring Boot** 项目之后，**Spring Boot**会启动内置的一个 **tomcat** 服务器。
+
+然后 **tomcat** 会启动 **Spring** 容器来**自动的扫描和装载**由 **Spring Boot **引入配置的一些框架的 **bean** 以及一些自定义的 **bean**。
+
+之后当有请求到来的时候会执行 **Spring MVC** 的 **Controller、Service、DAO** 等来执行对应的流程并返回定义的响应信息。
+
+### 7.常见的Spring中的注解？
+
+- SpringBootApplication：标注一个Springboot项目
+- Service：标注业务逻辑
+- Controller：标注视图控制器
+- RestController：标注这是一个返回json对象的视图控制器
+- RequestMapping：指定视图控制器的访问路径
+- Getmapping：指定get请求的路径
+- PostMapping：指定post请求的路径
+- Configuration：指定这是一个配置对象
+- FeignClient：指定feign远程调用的路径
+
+### ==8.Spring中都使用到了哪些设计模式？==
+
+主要使用到了**工厂、单例、代理**等设计模式。
+
+- **工厂模式**：Spring IOC核心的设计模式就是使用工厂模式，将所有的 bean 实例都放到了 spring 容器中，这样就不需要自己去创建bean实例了。
+- **单例模式**：spring bean 默认的作用域就是单例的。
+- **代理模式**：Spring AOP核心的设计模式就是使用代理模式，使用动态代理对象来代理目标对象，来实现一些增强功能的添加。
+
+### ==9.Spring Cloud原理了解吗？==
+
+**1）Spring Cloud介绍**
+
+Spring Cloud 就是用于分布式系统中多个微服务之间管理的一套机制的整合，可以方便的用于构建完整的一套分布式系统。
+
+**2）Spring Cloud原理**
+
+前端请求通过**网关系统Zuul**来将对应的请求转发到对应的**微服务**上，然后该**微服务**为了实现对应的业务可能还需要**调用其他的微服务**来完成。
+
+这里就需要用到**Spring Cloud Eureka 服务注册中心**，这里该微服务就可以进行**服务发现**，然后使用**ribbon+feign**来进行**RPC远程服务调用**，使用的是 **http** 访问。
+
+首先使用**ribbon**来进行**服务端负载均衡**，然后使用**feign**来请求其他的微服务来完成指定的业务，然后将响应内容进行返回。
+
+最后该微服务将响应进行返回。
+
+还有 **hystrix** 可以用于微服务之间的**熔断、隔离、降级**等操作来保证维服务的安全。
 
