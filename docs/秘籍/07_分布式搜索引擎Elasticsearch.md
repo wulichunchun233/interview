@@ -2,14 +2,13 @@
 
 一般业内的标准都是使用分布式搜索引擎 Elasticsearch，简称 es。在鑫课堂项目中就使用到了 es 来进行课程信息的检索。
 
-### 0.es的基础知识
+### ==0.es的基础知识==
 
 Elasticsearch 是一个基于[Lucene](https://baike.baidu.com/item/Lucene/6753302)的搜索服务器。它提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口。
 
-ES 的索引库是一个逻辑概念，它包括了**分词列表**及**文档列表**，同一个索引库中存储了相同类型的文档。它就相当于 MySQL中的表，或相当于 Mongodb 中的集合。
+ES 的索引库是一个逻辑概念，它包括了**分词列表**及**文档列表**，同一个索引库中存储了相同类型的文档。索引库就相当于 MySQL中的表，或相当于 Mongodb 中的集合。
 
 下图是 Elasticsearch 的索引结构，下边黑色部分是物理结构，上边黄色部分是逻辑结构，逻辑结构也是为了更好的去描述 Elasticsearch 的工作原理及去使用物理结构中的索引文件。
-
 
 ![1](https://wangxin1248.github.io/assets/images/2020/2020-04/1.png)
 
@@ -21,15 +20,19 @@ ES 的索引库是一个逻辑概念，它包括了**分词列表**及**文档�
 
 所谓倒排索引表是正排索引表的相反操作，在正排索引表当中，索引查找的顺序在先找 document 文档，然后再从 document 文档中查找对应的 term 词；而倒排索引表刚好相反，索引先找 term 词，再根据 term 找对应的 document。因此倒排索引表需要专门保存 term 和 document 之间的对应关系的。
 
-### 1.es的分布式架构原理能说一下吗？（es是如何实现分布式的？）
+### ==1.es的分布式架构原理能说一下吗？（es是如何实现分布式的？）==
 
 elasticsearch 的设计理念是分布式搜索引擎，底层其实还是基于 lucene 的。
 
-核心思想就是在多台机器上启动多个 es 进程实例，组成一个 es 集群。es 中存储的基本单位是索引，索引就相当于 mysql 中的一张表。es 中的基本概念：index、type、mapping、document、field。（es在9.0版本之后忽略type）mapping就是相当于 mysql 中的表结构定义，定义了type中每个字段的名称以及字段类型以及相应的配置；往 index 中写入的一条数据就是 document，一条 document 就相当于 mysql 中某个表的一行，每个 document 中有多个 field，每个 field 代表了这个 document 中一个字段的值。
+核心思想就是**在多台机器上启动多个 es 进程实例，组成一个 es 集群**。
 
-创建在 es 中的 **index 会被拆分为多个 shard，每个 shard 中会存放 index 中的一部分数据**。接着 shard 中的数据还会进行多个备份，也就是说每个 shard 中都有一个 primary shard，负责写入数据，但是还有几个 replica shard（一般 primary 和 replica 不在同一台设备上）。primary shard 写入数据之后会将数据同步到其他几个 replica shard 上去。但是客户端进去数据的读取的时候是可以通过 primary shard 或者 replica shard 任何一个 shard 都可以的。也就是说**写入只可以是 primary shard，而读取 primary 和 replica 都是可以的**。
+es 中存储的基本单位是**索引**，索引就相当于 mysql 中的一张表。
 
-整个 es 集群会自动选举一个一个节点作为 master 节点，这个 **master 节点其实就是干一些管理的工作**，比如维护元数据以及负责切换 primary shard 和 replica shard 的身份等。假如 master 节点宕机了则会重新选举一个节点为 master 节点。
+es 中的基本概念：**index、mapping、document、field**。（es在9.0版本之后忽略type）mapping就是相当于 mysql 中的表结构定义，定义了type中每个字段的名称以及字段类型以及相应的配置；往 index 中写入的一条数据就是一条 document，一条 document 就相当于 mysql 中某个表的一行，每个 document 中有多个 field，每个 field 代表了这个 document 中一个字段的值。
+
+创建在 es 中的 **index 会被拆分为多个 shard，每个 shard 中会存放 index 中的一部分数据**。接着 shard 中的数据还会进行多个备份，也就是说每个 shard 中都有一个 **primary shard**，负责写入数据，但是还有几个 **replica shard**（一般 primary 和 replica 不在同一台设备上）。primary shard 写入数据之后会将数据同步到其他几个 replica shard 上去。但是客户端进去数据的读取的时候是可以通过 primary shard 或者 replica shard 任何一个 shard 都可以的。也就是说**写入只可以是 primary shard，而读取 primary 和 replica 都是可以的**。
+
+整个 es 集群会自动选举一个节点作为 **master** 节点，这个 **master 节点其实就是干一些管理的工作**，比如维护**元数据**以及负责**切换 primary shard 和 replica shard 的身份**等。假如 master 节点宕机了则会重新选举一个节点为 master 节点。
 
 节点宕机之后其上面的 primary shard 的身份会有对应的 replica shard 来代替成为新的 primary shard。当宕机的机器修复好之后 mater 节点会将缺失的 replica shard 分配过去，同步后续修改的数据，让集群恢复正常。
 
@@ -39,39 +42,39 @@ elasticsearch 的设计理念是分布式搜索引擎，底层其实还是基于
 
 **1）es写数据原理：**
 
-1、客户端随机选择一个 node 发送写数据请求，这个 node 就被作为 coordinating node（协调节点）
+1、客户端随机选择一个 **node** 发送写数据请求，这个 **node** 就被作为 **coordinating node**（协调节点）
 
-2、coordinating node 对 document 进行 hash 判断其所要保存的 shard ，然后执行路由操作将其转发到具有该 shard 的 primary shard 的 node 上。
+2、**coordinating node** 对 **document** 进行 **hash** 判断其所要保存的 **shard** ，然后执行路由操作将其转发到具有该 **shard** 的 **primary shard** 的 **node** 上。
 
-3、具有 primary shard 的 node 上的 shard 对数据进行写入操作，并将数据同步到 replica shard 上去。
+3、具有 **primary shard** 的 **node** 上的 **shard** 对数据进行写入操作，并将数据同步到 **replica shard** 上去。
 
-4、coordinating node 发现 primary 和 replica shard 都完成数据保存操作之后会返回对应的响应信息给客户端。
+4、**coordinating node** 发现 **primary** 和 **replica shard** 都完成数据保存操作之后会返回对应的响应信息给客户端。
 
 **2）es读数据原理：**
 
-查询，GET一条数据，写入了一个 document，这个 document 会自动分配一个全局唯一的 id，doc id，同时也是根据 doc id 进行 hash 路由到对应的 primary shard 上。
+查询，GET一条数据，写入了一个 **document**，这个 **document** 会自动分配一个全局唯一的 id，**doc id**，同时也是根据 **doc id** 进行 **hash** 路由到对应的 **primary shard** 上。
 
-然后就可以通过 doc id 来进行查询，node 会根据 doc id 进行 hash，判断出来当时把 doc id 分配到那个 shard 上就从那个 shard 上去查询。
+然后就可以通过 **doc id** 来进行查询，**node** 会根据 **doc id** 进行 **hash**，判断出来当时把 **doc id** 分配到那个 **shard** 上就从那个 **shard** 上去查询。
 
-1、客户端随机选择一个 node 发送读取数据请求，该 node 作为 coordinating node
+1、客户端随机选择一个 **node** 发送读取数据请求，该 **node** 作为 **coordinating node**
 
-2、coordinating node 对 document 进行 hash 选择保存数据的 shard，然后将消息转发到具有该 sahrd 的 node 上，此时会使用 **round-robin 随机轮询算法**在 primary 和 replica 中随机选择一个让读请求进行负载均衡。
+2、**coordinating node** 对 **document** 进行 **hash** 选择保存数据的 **shard**，然后将消息转发到具有该 **sahrd** 的 **node** 上，此时会使用 **round-robin 随机轮询算法**在 **primary** 和 **replica** 中随机选择一个让读请求进行负载均衡。
 
-3、执行该请求的 node 会返回对应的 document 给 coordinating node
+3、执行该请求的 **node** 会返回对应的 **document** 给 **coordinating node**
 
-4、coordinating node 返回 document 给客户端。 
+4、**coordinating node** 返回 **document** 给客户端。 
 
 **3）es索引数据原理：**
 
-es最强大的就是做全文检索
+es最强大的就是做**全文检索**
 
-1、客户端随机选择一个 node 发送索引数据请求，该 node 作为 coordinating node
+1、客户端随机选择一个 **node** 发送索引数据请求，该 **node** 作为 **coordinating node**
 
-2、coordinating node 将搜索请求转发到所有的 shard 对应的 primary sahrd 或者 replica shard ，接下来分为两步来执行
+2、**coordinating node** 将搜索请求转发到所有的 **shard** 对应的 **primary sahrd** 或者 **replica shard **，接下来分为两步来执行
 
-3、query phase：每个shard将自己的搜索结果（doc id）返回给协调节点，由协调节点进行数据的合并、排序、分页等操作，产生最终的结果
+3、**query phase**：每个shard将自己的搜索结果（**doc id**）返回给协调节点，由协调节点进行数据的**合并、排序、分页**等操作，产生最终的结果
 
-4、fetch phase：接着由协调节点根据 doc id 去各个节点上拉取实际的 document 数据，最后返回给客户端。
+4、**fetch phase**：接着由协调节点根据 **doc id** 去各个节点上拉取实际的 **document 数据**，最后返回给客户端。
 
 ### 3.es在数据量很大（几亿级别）的情况下如何提高查询效率？
 
@@ -83,7 +86,9 @@ es最强大的就是做全文检索
 
 往es写入的数据实际都写入到磁盘文件中，**磁盘文件里的数据操作系统会自动将其缓存到 os cache **里面去。也就是真正的数据保存在磁盘文件中。
 
-然后当有客户端来读取索引的时候，会首先通过 es 的 shard 来向操作系统来读取数据，这时其实会**首先先访问操作系统的 filesystem cache，当 cache 中没有存在这些数据的时候才会去从磁盘文件中去读** ，此时就非常浪费时间了。由此可见，es 的搜索引擎严重依赖与底层的 filesystem cache，因此如果给 filesystem cache 更多的内存，尽量让内存可以容纳所有的 index segment file 索引数据文件，那么你搜索的时候就基本都是走内存的，性能会非常高。
+然后当有客户端来读取索引的时候，会首先通过 es 的 shard 来向操作系统来读取数据，这时其实会**首先先访问操作系统的 filesystem cache，当 cache 中没有存在这些数据的时候才会去从磁盘文件中去读** ，此时就非常浪费时间了。
+
+由此可见，es 的搜索引擎严重依赖于底层的 filesystem cache，因此如果给 filesystem cache 更多的内存，尽量让内存可以容纳所有的 index segment file 索引数据文件，那么你搜索的时候就基本都是走内存的，性能会非常高。
 
 因此想让 es 的性能要好，最佳情况下**要保证机器的内存可以至少容纳总数据量的一半**，也就是说仅仅在 es 上存储少量的数据。同时也可以尽可能的让 es 存储比较重要的数据，将一些比较重要的数据用来检索的数据存储在es，提高效率。
 
