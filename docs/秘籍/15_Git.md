@@ -1,34 +1,40 @@
-### Git
+# Git
 
-git 是一个分布式版本控制软件
+### 1、git介绍
 
-三种工作区域
+#### 1.git简介
 
-1. Git 的本地仓库：在 .git 目录中
-2. 工作区：用户操作目录
-3. 暂存区:在 .git 目录中
+git 是一个分布式版本控制软件。
 
-![12](/Users/wx/project/interview/docs/秘籍/images/12.jpeg)
+git 中有三大分区：
 
-三种状态
+1. **工作目录**：操作系统中的文件系统，所有的代码文件的操作都在这里完成。
+2. **索引 index**：文件的一个暂存区，会在下一次 commit 的时候被提交到git仓库。
+3. **git仓库**：由 git object 记录着每一次提交的快照，以链式结构记录着提交的变更。
 
-1. 已提交（committed）:该文件已经被安全地保存在本地仓库中
-2. 已修改（modified）:修改了某个文件，但还没有提交保存
-3. 已暂存（staged）:把已修改的文件放在下次提交时要保存的清单中
+![71](./images/71.png)
 
-![13](/Users/wx/project/interview/docs/秘籍/images/13.jpeg)
+git object 中保存了什么内容：
 
-Git 分支初识
+- **blob object**：文件内容
+- **tree object**：目录结构、文件权限、文件名
+- **commit object**：上一个commit，对应快照、作者、提交信息
 
-1. Git 中的分支，其实本质上仅仅是个指向 commit 对象的可变指针。
-2. Git 会使用 master 作为分支的默认名字。在若干次提交后，你其实已经有了一个指向最后一次提交对象的 master 分支，它在每次提交的时候都会自动向前移动。
-3. Git 鼓励在工作流程中频繁使用分支与合并。
+以上三种内容一旦创建之后就不能被变更。
 
-![11](/Users/wx/project/interview/docs/秘籍/images/11.png)
+- **refs object**：HEAD、分支、tag等。
+
+Git object 的保存结构是以**哈希树**结构保存的：
+
+![70](./images/70.png)
+
+![69](./images/69.png)
 
 
 
-#### 1.分支
+#### 2.git常用操作
+
+**1）分支**
 
 ```shell
 # 新建一个分支，但依然停留在当前分支
@@ -47,7 +53,7 @@ $ git checkout -
 $ git merge [branch]
 ```
 
-#### 2.提交
+**2）提交**
 
 ```shell
 # 提交暂存区到仓库区
@@ -57,7 +63,7 @@ $ git commit -m [message]
 $ git commit [file1] [file2] ... -m [message]
 ```
 
-#### 3.添加删除文件
+**3）添加删除文件**
 
 ```shell
 # 添加指定文件到暂存区
@@ -76,7 +82,7 @@ $ git rm [file1] [file2] ...
 $ git rm --cached [file]
 ```
 
-#### 4.远程同步
+**4）远程同步**
 
 ```shell
 # 下载远程仓库的所有变动
@@ -95,7 +101,7 @@ $ git push [remote] --force
 $ git push [remote] --all
 ```
 
-#### 5.撤销
+**5）撤销**
 
 ```shell
 # 恢复暂存区的指定文件到工作区
@@ -109,6 +115,36 @@ $ git checkout .
 
 # 重置当前分支的指针为指定commit，同时重置暂存区，但工作区不变
 $ git reset [commit]
+
+# 查看每一个提交的记录
+$ git reflog
 ```
 
-###
+### 2、git常见面试题
+
+**1）为什么要把文件的权限和文件名存储在 tree object 而不是 blob object？**
+
+因为文件的信息可能很大，假如文件的内容没有变更只是变更了文件名信息的话 blob object 就可以进行重用，只需要新建一个 tree object 就可以了，tree object 的体积远小于 blob object。
+
+**2）每次commit，git存储的是全新的文件快照还是存储的文件的变更部分？**
+
+存储的是**全新的文件快照**。
+
+因为git要保证每一个读取一个快照节点的时候都是 O(1) 时间复杂度的，假如存储的是文件的变更部分则会导致需要从第一个快照开始进行叠加，会导致对应的时间复杂度变为 O(n)。
+
+**3）git如何保证文件结构不被篡改？**
+
+git和区块链的文件结构非常相似，两者都是基于**哈希树和分布式**。
+
+**4）git如何获得一个干净的工作区间？**
+
+```sh
+$ git stash push
+```
+
+**5）git中如何删除敏感信息而不被记录**
+
+```shell
+$ git filter-branch --tree-filter 'rm password.txt' HEAD
+```
+
