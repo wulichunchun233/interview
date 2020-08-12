@@ -517,3 +517,175 @@ Java实现多态有三个必要条件：**继承、重写、向上转型**。
 
 **声明为私有访问类型的变量只能通过类中公共的 getter 方法被外部类访问。**
 
+### ==19.Spring循环依赖？==
+
+spring对循环依赖的处理有三种情况： 
+
+①**构造器的循环依赖**：这种依赖spring是处理不了的，直接抛出BeanCurrentlylnCreationException异常。 
+
+②**单例模式下的setter循环依赖**：通过“三级缓存”处理循环依赖。 
+
+③**非单例循环依赖**：无法处理。
+
+spring单例对象的初始化大略分为三步：
+
+1. createBeanInstance：实例化，其实也就是调用对象的构造方法实例化对象
+2. populateBean：填充属性，这一步主要是多bean的依赖属性进行填充
+3. initializeBean：调用spring xml中的init 方法。
+
+从上面讲述的单例bean初始化步骤我们可以知道，循环依赖主要发生在第一、第二步。也就是构造器循环依赖和field循环依赖。 接下来，我们具体看看spring是如何处理三种循环依赖的。
+
+#### 构造器循环依赖
+
+this .singletonsCurrentlylnCreation.add(beanName）将当前正要创建的bean 记录在缓存中 Spring 容器将每一个正在创建的bean 标识符放在一个“当前创建bean 池”中， bean 标识符：在创建过程中将一直保持在这个池中，因此如果在创建bean 过程中发现自己已经在“当前 创建bean 池” 里时，将抛出BeanCurrentlylnCreationException 异常表示循环依赖；而对于创建 完毕的bean 将从“ 当前创建bean 池”中清除掉。
+
+#### 单例模式 setter 循环依赖
+
+Spring 为了解决单例的循环依赖问题，使用了 **三级缓存** ，递归调用时发现 Bean 还在创建中即为循环依赖
+
+单例模式的 Bean 保存在如下的数据结构中：
+
+```java
+/** 一级缓存：用于存放完全初始化好的 bean **/
+private final Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>(256);
+
+/** 二级缓存：存放原始的 bean 对象（尚未填充属性），用于解决循环依赖 */
+private final Map<String, Object> earlySingletonObjects = new HashMap<String, Object>(16);
+
+/** 三级级缓存：存放 bean 工厂对象，用于解决循环依赖 */
+private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<String, ObjectFactory<?>>(16);
+
+/**
+bean 的获取过程：先从一级获取，失败再从二级、三级里面获取
+
+创建中状态：是指对象已经 new 出来了但是所有的属性均为 null 等待被 init
+*/
+```
+
+检测循环依赖的过程如下：
+
+- A 创建过程中需要 B，于是 **A 将自己放到三级缓里面** ，去实例化 B
+
+- B 实例化的时候发现需要 A，于是 B 先查一级缓存，没有，再查二级缓存，还是没有，再查三级缓存，找到了！
+
+- - **然后把三级缓存里面的这个 A 放到二级缓存里面，并删除三级缓存里面的 A**
+  - B 顺利初始化完毕，**将自己放到一级缓存里面**（此时B里面的A依然是创建中状态）
+
+- 然后回来接着创建 A，此时 B 已经创建结束，直接从一级缓存里面拿到 B ，然后完成创建，**并将自己放到一级缓存里面**
+
+- 如此一来便解决了循环依赖的问题
+
+一句话：先让最底层对象完成初始化，通过三级缓存与二级缓存提前曝光创建中的 Bean，让其他 Bean 率先完成初始化。
+
+#### 非单例循环依赖
+
+对于“prototype”作用域bean, Spring 容器无法完成依赖注入，因为Spring 容器不进行缓 存“prototype”作用域的bean ，因此无法提前暴露一个创建中的bean 。
+
+### ==20.Tomcat运行过程==
+
+Tomcat 最重要的是两个组件是：Connector（连接器） 和 Container（容器/集装箱），Connector 组件是可以被替换，这样可以提供给服务器设计者更多的选择，因为这个组件是如此重要，不仅跟服务器的设计的本身，而且和不同的应用场景也十分相关，所以一个 Container 可以选择对应多个 Connector。
+
+多个 Connector 和一个 Container 就组成一个 Service，有了 Service 就可以对外提供服务了，但是 Service 还要一个生存的环境， Server 就提供了这样一个环境。所以整个 Tomcat 的生命周期由 Server 控制。
+
+![72](./images/72.png)
+
+#### Server
+
+Server 要完成的任务很简单，就是要能够提供一个接口让其它程序能够访问到 Service 集合，同时要维护它所包含的所有 Service 的生命周期，包括**如何初始化**、**如何结束服务**、**如何找到别人要访问的 Service**。还有一些次要的任务，如记录Service运行日志，维护Session等等。Server包含的组件结构如下：
+
+![73](./images/73.png)
+
+#### Service
+
+Service 是在 Connector 和 Container 外面多包一层，把它们组装在一起，向外面提供服务，一个 Service 可以设置多个 Connector，但是只能有一个 Container 容器。
+
+#### Container
+
+Container本意是集装箱的意思，是一个接口，定义了下属的各种容器，重要的是Wrapper、Host、Engine、Context等
+
+![74](./images/74.png)
+
+**Engine(引擎)**
+
+负责处理来自相关联的service的所有请求，处理后，将结果返回给service，而connector是作为service与engine的中间媒介出现的。
+ 一个engine下可以配置一个默认主机，每个虚拟主机都有一个域名。当engine获得一个请求时，它把该请求匹配到虚拟主机(host)上，然后把请求交给该主机来处理。
+ Engine有一个默认主机，当请求无法匹配到任何一个虚拟主机时，将交给默认host来处理。Engine以线程的方式启动Host。
+
+**Host**
+
+代表一个虚拟主机，每个虚拟主机和某个网络域名（Domain Name）相匹配。
+ 每个虚拟主机下都可以部署一个或多个web应用，每个web应用对应于一个context，有一个context path。
+ 当Host获得一个请求时，将把该请求匹配到某个Context上，然后把该请求交给该Context来处理匹配的方法是“最长匹配”，所以一个path==””的Context将成为该Host的默认Context所有无法和其它Context的路径名匹配的请求都将最终和该默认Context匹配。
+
+**Context**
+
+一个Context对应于一个Web应用，一个Web应用由一个或者多个Servlet组成Context在创建的时候将根据配置文件`$CATALINA_HOME/conf/web.xml`和`$ WEBAPP_HOME/WEB-INF/web.xml`载入Servlet类。当Context获得请求时，将在自己的映射表(mapping table)中寻找相匹配的Servlet类，如果找到，则执行该类，获得请求的回应，并返回。
+
+**Wrapper**
+
+Wrapper 代表一个 Servlet，它负责管理一个 Servlet，包括的 Servlet 的装载、初始化、执行以及资源回收。Wrapper 是最底层的容器，它没有子容器了，所以调用它的 addChild 将会报错。
+ Wrapper 的实现类是 StandardWrapper，StandardWrapper 还实现了拥有一个 Servlet 初始化信息的 ServletConfig，由此看出 StandardWrapper 将直接和 Servlet 的各种信息打交道。
+
+**Connector**
+
+Connector将在某个指定的端口上来监听客户的请求，把从socket传递过来的数据，封装成Request，传递给Engine来处理，并从Engine处获得响应并返回给客户。
+
+Tomcat通常会用到两种Connector：
+
+> 1. Http Connector 在端口8080处侦听来自客户browser的http请求。 AJP Connector
+> 2. 在端口8009处侦听来自其它WebServer(Apache)的servlet/jsp代理请求。
+
+**Lifecycle**
+
+现实生活中大部分的事物都有生命周期，就像人的生老病死一样。
+
+在编程中也有很多对象是具有生命周期的，从初始化、运行、回收等 会经历几个不同的阶段。 在tomcat中容器相关的好多组建都实现了Lifecycle接口，当tomcat启动时，其依赖的下层组件会全部进行初始化。 并且可以***对每个组件生命周期中的事件添加监听器\***。
+
+例如当服务器启动的时候，tomcat需要去调用servlet的init方法和初始化容器等一系列操作，而停止的时候，也需要调用servlet的destory方法。而这些都是通过org.apache.catalina.Lifecycle接口来实现的。由这个类来制定各个组件生命周期的规范。
+
+**LifecycleListener**
+
+在Lifecycle的介绍中提到，Lifecycle会对每个组件生命周期中的事件添加监听器，也就是addLifecycleListener(LifecycleListener listener)方法，而LifecycleListener就是上面提到的监听器。
+
+**LifecycleEvent**
+
+顾名思义，就是当有监听事件发生的时候，LifecycleEvent会存储时间类型和数据
+
+#### tomcat 的启动过程
+
+tomcat的启动的起点是Server.start()方法，在这里它会依次启动`Container`和 `Connector`相关组件，最后到达EndPoint（Tomcat启动的Socket管理者），完成整个启动过程。如下图是个简易过程：
+
+![75](./images/75.png)
+
+#### Tomcat Server处理一个http请求的过程
+
+假设来自客户的请求为：
+http://localhost:8080/wsota/wsota_index.jsp
+
+1) 请求被发送到本机端口8080，被在那里侦听的Coyote HTTP/1.1 Connector获得
+2) Connector把该请求交给它所在的Service的Engine来处理，并等待来自Engine的回应
+3) Engine获得请求localhost/wsota/wsota_index.jsp，匹配它所拥有的所有虚拟主机Host
+4) Engine匹配到名为localhost的Host（即使匹配不到也把请求交给该Host处理，因为该Host被定义为该Engine的默认主机）
+5) localhost Host获得请求/wsota/wsota_index.jsp，匹配它所拥有的所有Context
+6) Host匹配到路径为/wsota的Context（如果匹配不到就把该请求交给路径名为””的Context去处理）
+7) path=”/wsota”的Context获得请求/wsota_index.jsp，在它的mapping table中寻找对应的servlet
+8) Context匹配到URL PATTERN为*.jsp的servlet，对应于JspServlet类
+9) 构造HttpServletRequest对象和HttpServletResponse对象，作为参数调用JspServlet的doGet或doPost方法
+10)Context把执行完了之后的HttpServletResponse对象返回给Host
+11)Host把HttpServletResponse对象返回给Engine
+12)Engine把HttpServletResponse对象返回给Connector
+13)Connector把HttpServletResponse对象返回给客户browser
+
+### ==21.Servlet介绍==
+
+**servlet就是一个Java接口**
+
+![](https://pic2.zhimg.com/80/v2-85bf84640fbc6b6e195b9c5b513b918f_1440w.jpg?source=1940ef5c)
+
+servlet接口定义的是**一套处理网络请求的规范**，所有实现servlet的类，都需要实现它那五个方法，其中最主要的是两个生命周期方法 init()和destroy()，还有一个处理请求的service()，也就是说，所有实现servlet接口的类，或者说，所有想要处理网络请求的类，都需要回答这三个问题：
+
+- 你初始化时要做什么
+- 你销毁时要做什么
+- 你接受到请求时要做什么
+
+servlet部署在容器中（Tomcat），然后Tomcat负责和客户端进行交互。

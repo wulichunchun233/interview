@@ -38,7 +38,7 @@ Git object 的保存结构是以**哈希树**结构保存的：
 
 ```shell
 # 新建一个分支，但依然停留在当前分支
-$ git branch [branch-name
+$ git branch [branch-name]
 
 # 删除分支
 $ git branch -d [branch-name]
@@ -148,3 +148,6 @@ $ git stash push
 $ git filter-branch --tree-filter 'rm password.txt' HEAD
 ```
 
+**6）git pull 和 git fetch 的区别？**
+
+pull=fetch+merge，pull的话，下拉远程分支并与本地分支合并。fetch只是下拉远程分支，怎么合并，可以自己再做选择。
