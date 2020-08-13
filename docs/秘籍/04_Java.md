@@ -36,8 +36,6 @@
 
 以下是几种单例模式的实现：
 
-
-
 **懒汉式(双重检查加锁版本)**
 
 懒汉式在第一次调用 getInstance 的时候进行实例化
@@ -267,7 +265,7 @@ Class对象的常用方法介绍：
 
 在java反射机制中我们就是使用第一种方式来获取对应的class对象，并使用 newInstance() 方法来得到对应类的类对象，这样便间接的通过代码的方法获取到了对应类的对象。
 
-### 5.Object类有哪些方法?
+### ==5.Object类有哪些方法?==
 
 Object类是一个特殊的类，是所有类的父类。它主要提供了以下11个方法：
 
@@ -295,9 +293,9 @@ public final void wait() throws InterruptedException;//跟之前的2个wait方�
 protected void finalize() throws Throwable { }//实例被垃圾回收器回收的时候触发的操作
 ```
 
-### 6.hashCode与equals的关系 （你重写过 hashcode 和 equals 么，为什么重写equals时必须重写hashCode方法？）
+### ==6.hashCode与equals的关系 （你重写过 hashcode 和 equals 么，为什么重写equals时必须重写hashCode方法？）==
 
-**hashCode()** 的作用是获取哈希码，也称为散列码；它实际上是返回一个int整数。这个哈希码的作用是确定该对象在哈希表中的索引位置。hashCode() 定义在JDK的Object.java中，这就意味着Java中的任何类都包含有hashCode() 函数。另外需要注意的是： Object 的 hashcode 方法是本地方法，也就是用 c 语言或 c++ 实现的，该方法通常用来将 对象的内存地址 转换为整数之后返回。
+**hashCode()** 的作用是获取哈希码，也称为散列码；它实际上是返回一个int整数。这个哈希码的作用是确定该对象在哈希表中的索引位置。hashCode() 定义在JDK的Object.java中，这就意味着Java中的任何类都包含有hashCode() 函数。另外需要注意的是： Object 的 hashcode 方法是**本地方法**，也就是用 c 语言或 c++ 实现的，该方法通常用来将 对象的内存地址 转换为整数之后返回。
 
 HashSet 中保存数据的时候会首先调用 **hashCode** 方法获取对象 hashcode 值，然后和已经保存的数据的 hashcode 进行比较，假如出现重复的话就得继续调用 **equals** 方法来检查 hashcode 相同的两个对象是否内存地址也一致，如何继续相同则证明两个对象是同一个对象，因此 hashSet 就不会让其加入。如果不同的话就证明是 hashcode 出现冲突，则散列到其他位置即可。这样就大大减少了调用 equals 的次数，也就大大提高了执行速度。
 
@@ -404,17 +402,82 @@ String s = input.readLine();
 3. 程序所在的线程死亡。
 4. 关闭CPU。
 
-### ==15.什么是泛型？为什么要使用泛型？==
+### ==15.什么是泛型？为什么要使用泛型？泛型中的逆变与协变？==
 
-泛型就是编写模板代码来适应任意类型；
+**泛型的本质是为了参数化类型（在不创建新的类型的情况下，通过泛型指定的不同类型来控制形参具体限制的类型）**。
 
 泛型的好处是**使用时不必对类型进行强制转换，它通过编译器对类型进行检查**；
 
 使用泛型意义和作用有：
 
 - **类型的参数化**，就是可以把类型像方法的参数那样传递。这一点意义非凡。
-
 - 泛型使编译器可以**在编译期间对类型进行检查以提高类型安全，减少运行时由于对象类型不匹配引发的异常**。
+
+在编译之后程序会采取**去泛型化**的措施。
+
+也就是说Java中的泛型，只在编译阶段有效。在编译过程中，正确检验泛型结果后，会将泛型的相关信息**擦除**，并且在对象进入和离开方法的边界处添加类型检查和类型转换的方法。也就是说，泛型信息不会进入到运行时阶段。
+
+泛型有三种使用方式，分别为：泛型类、泛型接口、泛型方法。
+
+**逆变与协变用来描述类型转换（type transformation）后的继承关系**
+
+其定义：如果A、B表示类型，f(⋅)表示类型转换，≤表示继承关系（比如，A≤B表示A是由B派生出来的子类）
+ f(⋅)是**逆变（contravariant）**的，当A≤B时有f(B)≤f(A)成立；
+ f(⋅)是**协变（covariant）**的，当A≤B时有f(A)≤f(B)成立；
+ f(⋅)是**不变（invariant）**的，当A≤B时上述两个式子均不成立，即f(A)与f(B)相互之间没有继承关系。
+
+Java中**数组是协变的，泛型是不变的**。
+
+Java泛型是不变的，可有时需要实现协变，在两个类型之间建立某种类型的向上转型关系，怎么办呢？
+
+```java
+public class GenericsAndCovariance {
+    public static void main(String[] args) {
+        List<? extends Fruit> flist = new ArrayList<Apple>();
+        flist.add(new Apple());  // 编译错误
+        flist.add(new Fruit());  // 编译错误
+        flist.add(new Object());  // 编译错误
+    }
+}
+```
+
+<? extends T>称为**子类通配符**，使用通配符可以将ArrayList<Apple>向上转型了，也就实现了协变。
+
+但是List<? extends Fruit>也可以合法的指向一个List<Orange>，显然往里面放Apple、Fruit、Object都是非法的。编译器不知道List<? extends Fruit>所持有的具体类型是什么，所以一旦执行这种类型的向上转型，你就将丢失掉向其中传递任何对象的能力。
+
+我们还可以走另外一条路，就是逆变。
+
+```java
+public class SuperTypeWildcards {
+    static void writeTo(List<? super Apple> apples) {
+        apples.add(new Apple());
+        apples.add(new Jonathan());
+        apples.add(new Fruit());  // 编译错误
+    }
+}
+```
+
+我们重用了关键字super指出泛型的下界为Apple，<？ super T>称为**超类通配符**，代表一个具体类型，而这个类型是Apple的超类。这样编译器就知道向其中添加Apple或Apple的子类型（例如Jonathan）是安全的了。但是，既然Apple是下界，那么可以知道向这样的List中添加Fruit是不安全的。
+
+那么总结下：什么使用extends，什么时候使用super。
+
+《Effective Java》给出精炼的描述：**producer-extends, consumer-super（PECS）**。
+
+说直白点就是，从数据流来看，==extends是限制数据来源的（**生产者**），而super是限制数据流入的（**消费者**）==
+
+例如上面SuperTypeWildcards类里，使用<? super Apple>就是限制add方法传入的类型必须是Apple及其子类型。
+
+仿照上面的代码，我写了个ExtendTypeWildcards类，可以看出<? extends Apple>限制了get方法返回的类型必须是Apple及其父类型。
+
+```csharp
+public class ExtendTypeWildcards {
+    static void readFrom(List<? extends Apple> apples) {
+        Apple apple = apples.get(0);
+        Jonathan jonathan = apples.get(0);  // 编译错误
+        Fruit fruit = apples.get(0);
+    }
+}
+```
 
 ### 16.32位JDK和64位JDK的区别？
 
