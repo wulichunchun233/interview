@@ -1,4 +1,4 @@
-# 基础
+# ##基础
 
 ### ==1.什么是单例模式？为什么要用单例模式?手写几种线程安全的单例模式?==
 
@@ -161,7 +161,7 @@ public class Singleton{
 
 手写单例模式的话需要掌握懒汉式、饿汉式、静态内部类三种。
 
-### 2.Java 反射机制介绍？
+### ==2.Java 反射机制介绍？==
 
 **JAVA反射（Reflection）**：在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取的信息以及动态调用对象的方法的功能称为java语言的反射机制。
 
@@ -173,6 +173,11 @@ Java的反射机制是java被称为动态语言的一个关键性质。
 2.    反射可以在程序运行时获取任意一个对象所属的类对象。
 3.    在运行时可以获取到类中所有属性对象，并对其操作（包括私有属性）。
 4.    在运行时可以获取到类中、父类中所有方法，并调用。
+
+反射机制的主要应用：
+
+- JDBC数据库的连接。
+- Spring框架。
 
 ### ==3.类装载器介绍？双亲委派机制？破坏双亲委派机制？==
 
@@ -200,7 +205,7 @@ JVM装载类时使用**全盘负责委托机制**
 
 **双亲委派机制**：先委托父装载器寻找目标类，只有在找不到的情况下才从自己的类路径中查找并装载目标类。
 
-为什么使用双亲委派机制：一个是安全性，另一个就是性能；（避免**重复加载**和**避免核心类被篡改**）
+为什么使用双亲委派机制：一个是**安全性**，另一个就是**性能**；（避免**重复加载**和**避免核心类被篡改**）
 
 JVM在运行时会产生三个装载器字节码文件：**根装载器、ExtClassLoader（扩展类装载器）和AppClassLoader（系统类装载器）**。
 
@@ -335,7 +340,7 @@ hashCode()与equals()的相关关系：
 
 **拆箱**：将包装类型转换为基本数据类型；
 
-### 11.关于 ﬁnal 关键字的一些总结
+### ==11.关于 ﬁnal 关键字的一些总结==
 
 ﬁnal关键字主要用在三个地方：**变量、方法、类**。
 
@@ -580,75 +585,11 @@ Java实现多态有三个必要条件：**继承、重写、向上转型**。
 
 **声明为私有访问类型的变量只能通过类中公共的 getter 方法被外部类访问。**
 
-### ==19.Spring循环依赖？==
+### ==19.Tomcat运行过程==
 
-spring对循环依赖的处理有三种情况： 
+Tomcat 最重要的是两个组件是：**Connector（连接器**） 和 **Container（容器/集装箱）**，Connector 组件是可以被替换，这样可以提供给服务器设计者更多的选择，因为这个组件是如此重要，不仅跟服务器的设计的本身，而且和不同的应用场景也十分相关，所以一个 Container 可以选择对应多个 Connector。
 
-①**构造器的循环依赖**：这种依赖spring是处理不了的，直接抛出BeanCurrentlylnCreationException异常。 
-
-②**单例模式下的setter循环依赖**：通过“三级缓存”处理循环依赖。 
-
-③**非单例循环依赖**：无法处理。
-
-spring单例对象的初始化大略分为三步：
-
-1. createBeanInstance：实例化，其实也就是调用对象的构造方法实例化对象
-2. populateBean：填充属性，这一步主要是多bean的依赖属性进行填充
-3. initializeBean：调用spring xml中的init 方法。
-
-从上面讲述的单例bean初始化步骤我们可以知道，循环依赖主要发生在第一、第二步。也就是构造器循环依赖和field循环依赖。 接下来，我们具体看看spring是如何处理三种循环依赖的。
-
-#### 构造器循环依赖
-
-this .singletonsCurrentlylnCreation.add(beanName）将当前正要创建的bean 记录在缓存中 Spring 容器将每一个正在创建的bean 标识符放在一个“当前创建bean 池”中， bean 标识符：在创建过程中将一直保持在这个池中，因此如果在创建bean 过程中发现自己已经在“当前 创建bean 池” 里时，将抛出BeanCurrentlylnCreationException 异常表示循环依赖；而对于创建 完毕的bean 将从“ 当前创建bean 池”中清除掉。
-
-#### 单例模式 setter 循环依赖
-
-Spring 为了解决单例的循环依赖问题，使用了 **三级缓存** ，递归调用时发现 Bean 还在创建中即为循环依赖
-
-单例模式的 Bean 保存在如下的数据结构中：
-
-```java
-/** 一级缓存：用于存放完全初始化好的 bean **/
-private final Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>(256);
-
-/** 二级缓存：存放原始的 bean 对象（尚未填充属性），用于解决循环依赖 */
-private final Map<String, Object> earlySingletonObjects = new HashMap<String, Object>(16);
-
-/** 三级级缓存：存放 bean 工厂对象，用于解决循环依赖 */
-private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<String, ObjectFactory<?>>(16);
-
-/**
-bean 的获取过程：先从一级获取，失败再从二级、三级里面获取
-
-创建中状态：是指对象已经 new 出来了但是所有的属性均为 null 等待被 init
-*/
-```
-
-检测循环依赖的过程如下：
-
-- A 创建过程中需要 B，于是 **A 将自己放到三级缓里面** ，去实例化 B
-
-- B 实例化的时候发现需要 A，于是 B 先查一级缓存，没有，再查二级缓存，还是没有，再查三级缓存，找到了！
-
-- - **然后把三级缓存里面的这个 A 放到二级缓存里面，并删除三级缓存里面的 A**
-  - B 顺利初始化完毕，**将自己放到一级缓存里面**（此时B里面的A依然是创建中状态）
-
-- 然后回来接着创建 A，此时 B 已经创建结束，直接从一级缓存里面拿到 B ，然后完成创建，**并将自己放到一级缓存里面**
-
-- 如此一来便解决了循环依赖的问题
-
-一句话：先让最底层对象完成初始化，通过三级缓存与二级缓存提前曝光创建中的 Bean，让其他 Bean 率先完成初始化。
-
-#### 非单例循环依赖
-
-对于“prototype”作用域bean, Spring 容器无法完成依赖注入，因为Spring 容器不进行缓 存“prototype”作用域的bean ，因此无法提前暴露一个创建中的bean 。
-
-### ==20.Tomcat运行过程==
-
-Tomcat 最重要的是两个组件是：Connector（连接器） 和 Container（容器/集装箱），Connector 组件是可以被替换，这样可以提供给服务器设计者更多的选择，因为这个组件是如此重要，不仅跟服务器的设计的本身，而且和不同的应用场景也十分相关，所以一个 Container 可以选择对应多个 Connector。
-
-多个 Connector 和一个 Container 就组成一个 Service，有了 Service 就可以对外提供服务了，但是 Service 还要一个生存的环境， Server 就提供了这样一个环境。所以整个 Tomcat 的生命周期由 Server 控制。
+多个 Connector 和一个 Container 就组成一个 **Service**，有了 Service 就可以对外提供服务了，但是 **Service** 还要一个生存的环境， **Service** 就提供了这样一个环境。所以整个 Tomcat 的生命周期由 **Server** 控制。
 
 ![72](./images/72.png)
 
@@ -725,27 +666,39 @@ tomcat的启动的起点是Server.start()方法，在这里它会依次启动`Co
 假设来自客户的请求为：
 http://localhost:8080/wsota/wsota_index.jsp
 
-1) 请求被发送到本机端口8080，被在那里侦听的Coyote HTTP/1.1 Connector获得
-2) Connector把该请求交给它所在的Service的Engine来处理，并等待来自Engine的回应
-3) Engine获得请求localhost/wsota/wsota_index.jsp，匹配它所拥有的所有虚拟主机Host
-4) Engine匹配到名为localhost的Host（即使匹配不到也把请求交给该Host处理，因为该Host被定义为该Engine的默认主机）
-5) localhost Host获得请求/wsota/wsota_index.jsp，匹配它所拥有的所有Context
-6) Host匹配到路径为/wsota的Context（如果匹配不到就把该请求交给路径名为””的Context去处理）
-7) path=”/wsota”的Context获得请求/wsota_index.jsp，在它的mapping table中寻找对应的servlet
-8) Context匹配到URL PATTERN为*.jsp的servlet，对应于JspServlet类
-9) 构造HttpServletRequest对象和HttpServletResponse对象，作为参数调用JspServlet的doGet或doPost方法
-10)Context把执行完了之后的HttpServletResponse对象返回给Host
-11)Host把HttpServletResponse对象返回给Engine
-12)Engine把HttpServletResponse对象返回给Connector
-13)Connector把HttpServletResponse对象返回给客户browser
+1) 请求被发送到本机端口8080，被在那里侦听的Coyote HTTP/1.1 **Connector**获得
 
-### ==21.Servlet介绍==
+2) **Connector**把该请求交给它所在的**Service**的**Engine**来处理，并等待来自**Engine**的回应
+
+3) **Engine**获得请求localhost/wsota/wsota_index.jsp，匹配它所拥有的所有虚拟主机**Host**
+
+4) **Engine**匹配到名为localhost的**Host**（即使匹配不到也把请求交给该Host处理，因为该Host被定义为该Engine的默认主机）
+
+5) localhost **Host**获得请求/wsota/wsota_index.jsp，匹配它所拥有的所有**Context**
+
+6) **Host**匹配到路径为/wsota的**Context**（如果匹配不到就把该请求交给路径名为””的Context去处理）
+
+7) path=”/wsota”的**Context**获得请求/wsota_index.jsp，在它的**mapping table**中寻找对应的**servlet**
+
+8) **Context** 匹配到URL PATTERN为.jsp的servlet，对应于**JspServlet**类
+
+9) 构造**HttpServletRequest**对象和**HttpServletResponse**对象，作为参数调用**JspServlet**的**doGet**或**doPost**方法
+
+10)**Context**把执行完了之后的**HttpServletResponse**对象返回给**Host**
+
+11)**Host**把**HttpServletResponse**对象返回给**Engine**
+
+12)**Engine**把**HttpServletResponse**对象返回给**Connector**
+
+13)**Connector**把**HttpServletResponse**对象返回给客户browser
+
+### ==20.Servlet介绍==
 
 **servlet就是一个Java接口**
 
 ![](https://pic2.zhimg.com/80/v2-85bf84640fbc6b6e195b9c5b513b918f_1440w.jpg?source=1940ef5c)
 
-servlet接口定义的是**一套处理网络请求的规范**，所有实现servlet的类，都需要实现它那五个方法，其中最主要的是两个生命周期方法 init()和destroy()，还有一个处理请求的service()，也就是说，所有实现servlet接口的类，或者说，所有想要处理网络请求的类，都需要回答这三个问题：
+servlet接口定义的是**一套处理网络请求的规范**，所有实现servlet的类，都需要实现它那五个方法，其中最主要的是两个生命周期方法 **init()**和**destroy()**，还有一个处理请求的**service()**，也就是说，所有实现servlet接口的类，或者说，所有想要处理网络请求的类，都需要回答这三个问题：
 
 - 你初始化时要做什么
 - 你销毁时要做什么
@@ -753,7 +706,7 @@ servlet接口定义的是**一套处理网络请求的规范**，所有实现ser
 
 servlet部署在容器中（Tomcat），然后Tomcat负责和客户端进行交互。
 
-### ==22.静态内部类和普通内部类的区别？==
+### ==21.静态内部类和普通内部类的区别？==
 
 **static 静态修饰符**
 
@@ -791,4 +744,86 @@ A a=new A();
 A.B b=new A.B(); 
 A.C c=a.new C();
 ```
+
+### 22.java创建对象的方式？
+
+- 使用**new关键字**
+
+这是我们最常见的也是最简单的创建对象的方式，通过这种方式我们还可以调用任意的构造函数（无参的和有参的）。
+
+- 使用**反射机制**
+
+运用反射手段，调用 **Java.lang.Class** 或者 **java.lang.reflect.Constructor** 类的 **newInstance()** 实例方法。
+
+- 使用**clone方法**
+
+无论何时我们调用一个对象的 **clone方法**，jvm就会创建一个新的对象，将前面对象的内容全部拷贝进去。用clone方法创建对象并不会调用任何构造函数。clone是**浅拷贝**的。覆盖Object中的clone方法， 实现**深拷贝**。
+
+如果想要深拷贝一个对象， 这个对象必须要实现Cloneable接口，实现clone方法，并且在clone方法内部，把该对象引用的其他对象也要clone一份 ， 这就要求这个被引用的对象必须也要实现Cloneable接口并且实现clone方法。
+
+- 使用**反序列化**
+
+当我们序列化和反序列化一个对象，jvm会给我们创建一个单独的对象。在反序列化时，jvm创建对象**并不会调用任何构造函数**。
+
+通过序列化来实现**深拷贝**。
+
+### 23.java深拷贝和浅拷贝
+
+Java中有三种类型的对象拷贝：浅拷贝(Shallow Copy)、深拷贝(Deep Copy)、延迟拷贝(Lazy Copy)。
+
+- 浅拷贝：按位拷贝对象，它会创建一个新对象，这个对象有着原始对象属性值的一份精确拷贝。
+  - 如果属性是**基本类型**，拷贝的就是基本类型的值；如果属性是**内存地址（引用类型）**，拷贝的就是**内存地址** ，因此如果其中一个对象改变了这个地址，就会影响到另一个对象。
+- 深拷贝：深拷贝会拷贝**所有的属性**,并拷贝属性指向的动态分配的**内存**。当对象和它所引用的对象一起拷贝时即发生深拷贝。深拷贝相比于浅拷贝速度较慢并且花销较大。
+- 延迟拷贝
+  - 延迟拷贝是浅拷贝和深拷贝的一个组合，实际上很少会使用。这个以前几乎都没听说过，后来看书才知道有这么一种拷贝！
+  - 当最开始拷贝一个对象时，会使用速度较快的浅拷贝，还会使用一个计数器来记录有多少对象共享这个数据。当程序想要修改原始的对象时，它会决定数据是否被共享（通过检查计数器）并根据需要进行深拷贝。
+  - 延迟拷贝从外面看起来就是深拷贝，但是只要有可能它就会利用浅拷贝的速度。当原始对象中的引用不经常改变的时候可以使用延迟拷贝。由于存在计数器，效率下降很高，但只是常量级的开销。而且, 在某些情况下, 循环引用会导致一些问题。
+
+如何选择拷贝方式：
+
+- 如果对象的属性全是基本类型的，那么可以使用浅拷贝。
+
+- 如果对象有引用属性，那就要基于具体的需求来选择浅拷贝还是深拷贝。
+
+- 意思是如果对象引用任何时候都不会被改变，那么没必要使用深拷贝，只需要使用浅拷贝就行了。如果对象引用经常改变，那么就要使用深拷贝。没有一成不变的规则，一切都取决于具体需求。
+
+**数组**除了默认实现了**clone()** 方法之外，还提供了**Arrays.copyOf** 方法用于拷贝，这两者都是**浅拷贝**。
+
+**集合**的拷贝也是我们平时经常会遇到的，一般情况下，我们都是用浅拷贝来实现，即通过**构造函数**或者**clone**方法。
+
+###  ==24.Stackoverflow & OOM及其错误排查方式==
+
+Stackoverflow：调用栈深度超过限制，经常在**递归运算**时会遇到。排查是进行对应的代码检查即可。
+
+OOM：Out of memory，当JVM分配内存时不够才会抛出异常。错误排查可以按照不同的错误执行不同的检查，主要分为：
+
+- **java.lang.OutOfMemoryError:Java heap space**：新建对象时 JVM内存不足，解决方式：new创建时控制
+
+- **java.lang.OutOfMemoryError:GC overhead limit exceedec**：GC回收时间过长时会抛出该异常。过长的定义是，超过98%的时间用来做GC并且回收了不到2%的堆内存，连续多次GC都只回收了不到2%的极端情况下才会抛出。解决方式：避免恶性循环，浪费CPU性能。
+- **java.lang.OutOfMemoryError:Direct buffer memory**：写NIO程序时经常使用ByteBuffer来读取或者写入数据，这是一种基于通道（channel）与缓冲区（buffer）的I/O方式，他可以使用Native函数库直接分配堆外内存，然后通过一个存储在Java堆里面的DirectByteBuffer对象作为这块内存的引用操作，这样能在一些场景中显著提高性能，因为避免了在Java堆和Native堆中来回复制数据。ByteBuffer.allocate(caoability)第一种方式是分配JVM堆内存，属于GC管辖范围，由于需要拷贝所以速度相对较慢
+  ByteBuffer.allocateDirect(caoability) 第2种方式是分配OS本地内存，不属于GC管辖范围，由于不需要内存拷贝所以速度相对较快。
+  但如果不断分配本地内存，堆内存很少使用，那么JVM就不需要执行GC，DirectByteBuffer对象们就不会被回收，这时候堆内存充足，但本地内存可能已经使用光了，再次尝试分配本地内存就会出现OOM
+- **java.lang.OutOfMemoryError:unable to create new native thread**： 导致原因：1.你的应用创建了太多线程，一个应用进程创建多个线程，超过系统承载极限2、你的服务器不允许你的应用程序创建这么多线程，linux系统默认允许单个进程可以创建的线程数是1024个
+- **java.lang.OutOfMemoryError:Metaspce**：Java 8 之后的版本使用metaspace 来替代永久代。metaspace 是方法区在HotSpot中的实现，它与永久代最大的区别在于：metaspace并不在虚拟机内存中而是使用本地内存。存储信息如下：虚拟机加载的类信息、常量池、静态变量、即时编译后的代码。
+
+### ==25.java中静态属性、静态方法的继承问题==
+
+java中静态属性和静态方法可以**被继承**，但是没有被重写(overwrite)而是**被隐藏**，也就是**不能被重写**。
+
+原因：
+
+- 静态方法和属性是属于**类**的，调用的时候直接通过**类名.方法名**完成，不需要继承机制就可以调用。如果子类里面定义了静态方法和属性，那么这时候父类的静态方法或属性称之为"隐藏"。如果你想要调用父类的静态方法和属性，直接通过**父类名.方法**或**父类名.变量名**完成，至于是否继承一说，子类是有继承静态方法和属性，但是跟实例方法和属性不太一样，存在"隐藏"的这种情况。
+
+- 多态之所以能够实现依赖于继承、接口和重写、重载（继承和重写最为关键）。有了继承和重写就可以实现**父类的引用指向不同子类的对象**。重写的功能是："重写"后子类的优先级要高于父类的优先级，但是“隐藏”是没有这个优先级之分的。
+
+- **静态属性**、**静态方法**和**非静态的属性**都可以被继承和隐藏而不能被重写，因此不能实现多态，不能实现父类的引用可以指向不同子类的对象。
+
+- **非静态方法**可以被继承和重写，因此可以实现多态。
+
+### ==26.java父线程如何获取子线程的返回结果？==
+
+1. 主线程等待。
+2. Join方法等待。
+3. 实现Callable接口和FutureTask
+4. 使用线程池
 

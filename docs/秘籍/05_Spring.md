@@ -269,3 +269,85 @@ Spring Cloud 就是用于分布式系统中多个微服务之间管理的一套�
 
 还有 **hystrix** 可以用于微服务之间的**熔断、隔离、降级**等操作来保证维服务的安全。
 
+### ==10.Spring和Spring Boot的区别？==
+
+总的来说Spring是使用基本的JavaBean代替EJB，通过容器管理JavaBean的配置和声明周期，在此基础上实现了AOP、IOC的Spring核心功能，其他web框架组件在AOP、IOC的基础上工作，将JavaBean交给Spring来管理。
+
+简单来说，Spring是**一个轻量级的控制反转（IoC）和面向切面（AOP）的容器框架**。
+
+Spring Boot不是一门新技术，他是一个创建spring工程的脚手架工具。从本质上来说，Spring Boot就是Spring，它做了一些对Spring Bean的默认配置。
+
+Spring Cloud事实上是一整套基于Spring Boot的微服务解决方案。
+
+### ==11.Spring循环依赖？==
+
+spring对循环依赖的处理有三种情况： 
+
+①**构造器的循环依赖**：这种依赖spring是处理不了的，直接抛出BeanCurrentlylnCreationException异常。 
+
+②**单例模式下的setter循环依赖**：通过“三级缓存”处理循环依赖。 
+
+③**非单例循环依赖**：无法处理。
+
+spring单例对象的初始化大略分为三步：
+
+1. createBeanInstance：实例化，其实也就是调用对象的构造方法实例化对象
+2. populateBean：填充属性，这一步主要是多bean的依赖属性进行填充
+3. initializeBean：调用spring xml中的init 方法。
+
+从上面讲述的单例bean初始化步骤我们可以知道，循环依赖主要发生在第一、第二步。也就是构造器循环依赖和field循环依赖。 接下来，我们具体看看spring是如何处理三种循环依赖的。
+
+**构造器循环依赖**
+
+this .singletonsCurrentlylnCreation.add(beanName）将当前正要创建的bean 记录在缓存中 Spring 容器将每一个正在创建的bean 标识符放在一个“当前创建bean 池”中， bean 标识符：在创建过程中将一直保持在这个池中，因此如果在创建bean 过程中发现自己已经在“当前 创建bean 池” 里时，将抛出BeanCurrentlylnCreationException 异常表示循环依赖；而对于创建 完毕的bean 将从“ 当前创建bean 池”中清除掉。
+
+**单例模式 setter 循环依赖**
+
+Spring 为了解决单例的循环依赖问题，使用了 **三级缓存** ，递归调用时发现 Bean 还在创建中即为循环依赖
+
+单例模式的 Bean 保存在如下的数据结构中：
+
+```java
+/** 一级缓存：用于存放完全初始化好的 bean **/
+private final Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>(256);
+
+/** 二级缓存：存放原始的 bean 对象（尚未填充属性），用于解决循环依赖 */
+private final Map<String, Object> earlySingletonObjects = new HashMap<String, Object>(16);
+
+/** 三级级缓存：存放 bean 工厂对象，用于解决循环依赖 */
+private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<String, ObjectFactory<?>>(16);
+
+/**
+bean 的获取过程：先从一级获取，失败再从二级、三级里面获取
+
+创建中状态：是指对象已经 new 出来了但是所有的属性均为 null 等待被 init
+*/
+```
+
+检测循环依赖的过程如下：
+
+- A 创建过程中需要 B，于是 **A 将自己放到三级缓里面** ，去实例化 B
+
+- B 实例化的时候发现需要 A，于是 B 先查一级缓存，没有，再查二级缓存，还是没有，再查三级缓存，找到了！
+
+- - **然后把三级缓存里面的这个 A 放到二级缓存里面，并删除三级缓存里面的 A**
+  - B 顺利初始化完毕，**将自己放到一级缓存里面**（此时B里面的A依然是创建中状态）
+
+- 然后回来接着创建 A，此时 B 已经创建结束，直接从一级缓存里面拿到 B ，然后完成创建，**并将自己放到一级缓存里面**
+
+- 如此一来便解决了循环依赖的问题
+
+一句话：**先让最底层对象完成初始化，通过三级缓存与二级缓存提前曝光创建中的 Bean，让其他 Bean 率先完成初始化。**
+
+**非单例循环依赖**
+
+对于“prototype”作用域bean, Spring 容器无法完成依赖注入，因为Spring 容器不进行缓 存“prototype”作用域的bean ，因此无法提前暴露一个创建中的bean 。
+
+### ==12.Spring依赖注入的方式？==
+
+- @Autowired：自动装配
+- setter 方法注入
+- 构造器注入
+- 静态工厂的方法注入
+- 实例工厂的方法注入
+
