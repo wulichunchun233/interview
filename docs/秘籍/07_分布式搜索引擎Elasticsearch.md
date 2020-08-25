@@ -6,7 +6,7 @@
 
 Elasticsearch 是一个基于[Lucene](https://baike.baidu.com/item/Lucene/6753302)的搜索服务器。它提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口。
 
-ES 的索引库是一个逻辑概念，它包括了**分词列表**及**文档列表**，同一个索引库中存储了相同类型的文档。索引库就相当于 MySQL中的表，或相当于 Mongodb 中的集合。
+ES 的**索引库**是一个逻辑概念，它包括了**分词列表**及**文档列表**，同一个索引库中存储了相同类型的文档。索引库就相当于 MySQL中的表，或相当于 Mongodb 中的集合。
 
 下图是 Elasticsearch 的索引结构，下边黑色部分是物理结构，上边黄色部分是逻辑结构，逻辑结构也是为了更好的去描述 Elasticsearch 的工作原理及去使用物理结构中的索引文件。
 
@@ -14,11 +14,13 @@ ES 的索引库是一个逻辑概念，它包括了**分词列表**及**文档�
 
 逻辑结构部分是一个**倒排索引表**：
 
-- 将要搜索的文档内容分词，所有不重复的词组成分词列表。
-- 将搜索的文档最终以Document方式存储起来。
+- 将要搜索的文档内容**分词**，所有不重复的词组成**分词列表**。
+- 将搜索的文档最终以**Document**方式存储起来。
 - 每个词和docment都有关联。
 
-所谓倒排索引表是正排索引表的相反操作，在正排索引表当中，索引查找的顺序在先找 document 文档，然后再从 document 文档中查找对应的 term 词；而倒排索引表刚好相反，索引先找 term 词，再根据 term 找对应的 document。因此倒排索引表需要专门保存 term 和 document 之间的对应关系的。
+所谓**倒排索引表**是正排索引表的相反操作，在正排索引表当中，索引查找的顺序在先找 document 文档，然后再从 document 文档中查找对应的 term 词；而倒排索引表刚好相反，索引先找 term 词，再根据 term 找对应的 document。
+
+因此倒排索引表需要专门保存 **term 和 document 之间的对应关系**。
 
 ### ==1.es的分布式架构原理能说一下吗？（es是如何实现分布式的？）==
 
@@ -30,7 +32,7 @@ es 中存储的基本单位是**索引**，索引就相当于 mysql 中的一张
 
 es 中的基本概念：**index、mapping、document、field**。（es在9.0版本之后忽略type）mapping就是相当于 mysql 中的表结构定义，定义了type中每个字段的名称以及字段类型以及相应的配置；往 index 中写入的一条数据就是一条 document，一条 document 就相当于 mysql 中某个表的一行，每个 document 中有多个 field，每个 field 代表了这个 document 中一个字段的值。
 
-创建在 es 中的 **index 会被拆分为多个 shard，每个 shard 中会存放 index 中的一部分数据**。接着 shard 中的数据还会进行多个备份，也就是说每个 shard 中都有一个 **primary shard**，负责写入数据，但是还有几个 **replica shard**（一般 primary 和 replica 不在同一台设备上）。primary shard 写入数据之后会将数据同步到其他几个 replica shard 上去。但是客户端进去数据的读取的时候是可以通过 primary shard 或者 replica shard 任何一个 shard 都可以的。也就是说**写入只可以是 primary shard，而读取 primary 和 replica 都是可以的**。
+创建在 es 中的 **index 会被拆分为多个 shard，每个 shard 中会存放 index 中的一部分数据**。接着 shard 中的数据还会进行多个备份，也就是说每个 shard 中都有一个 **primary shard**，负责**写入数据**，但是还有几个 **replica shard**（一般 primary 和 replica 不在同一台设备上）。primary shard 写入数据之后会将数据同步到其他几个 replica shard 上去。但是客户端进行数据的读取的时候是可以通过 primary shard 或者 replica shard 任何一个 shard 都可以的。也就是说**写入只可以是 primary shard，而读取 primary 和 replica 都是可以的**。
 
 整个 es 集群会自动选举一个节点作为 **master** 节点，这个 **master 节点其实就是干一些管理的工作**，比如维护**元数据**以及负责**切换 primary shard 和 replica shard 的身份**等。假如 master 节点宕机了则会重新选举一个节点为 master 节点。
 
@@ -115,3 +117,4 @@ es 的分页检索的实现原理是将需要分页的数据的前面所有的�
 可以的话尽量避免在系统中提供比较深的分页的功能。或者直接提示用户较深的分页是需要更多的时间来完成的。
 
 另外的话可以像一个 APP 一样（微博）使用 scroll api 来将所有的数据建立快照保存，然后一点一点的滑动，这样就不会出现跳页的情况。性能也会有所改善。
+
