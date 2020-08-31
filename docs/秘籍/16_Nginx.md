@@ -50,10 +50,48 @@ Nginx 有以下5个优点：
 
 #### 4.Nginx为什么那么快？
 
-Nginx之所以性能如此优越，是因为它使用了多进程 + 异步非阻塞方式（IO 多路复用 epoll）。
+Nginx之所以性能如此优越，是因为它使用了**多进程 + 异步非阻塞方式（IO 多路复用 epoll）**。
 
 下图是 Nginx 的进程模型：
 
-![32](/Users/wx/project/interview/docs/秘籍/images/32.png)
+![32](https://pic2.zhimg.com/v2-9eabd8570ab7ca5500323745b184dc25_r.jpg)
 
-多进程：一个 Master 进程、多个 Worker 进程，Master 进程管理 Worker 进程
+多进程：**一个 Master 进程、多个 Worker 进程，Master 进程管理 Worker 进程**
+
+Nginx 服务器，正常运行过程中：
+
+1. **多进程**：一个 Master 进程、多个 Worker 进程
+
+2. **Master 进程**：管理 Worker 进程
+
+3. 1. 对外接口：接收`外部的操作`（信号）
+   2. 对内转发：根据`外部的操作`的不同，通过`信号`管理 Worker
+   3. 监控：监控 worker 进程的运行状态，worker 进程异常终止后，自动重启 worker 进程
+
+4. **Worker 进程**：所有 Worker 进程都是平等的
+
+5. 1. 实际处理：网络请求，由 Worker 进程处理；
+   2. Worker 进程数量：在 nginx.conf 中配置，一般设置为`核心数`，充分利用 CPU 资源，同时，避免进程数量过多，避免进程竞争 CPU 资源，增加上下文切换的损耗。
+
+![](https://picb.zhimg.com/v2-4f9de4b2763a1388b7eef14444429cce_r.jpg)
+
+HTTP 连接建立和请求处理过程：
+
+1. Nginx 启动时，Master 进程，加载配置文件
+2. Master 进程，初始化监听的 socket
+3. Master 进程，fork 出多个 Worker 进程
+4. Worker 进程，竞争新的连接，获胜方通过三次握手，建立 Socket 连接，并处理请求
+
+Nginx 高性能、高并发：
+
+1. Nginx 采用：**`多进程` + `异步非阻塞`方式（`IO 多路复用` epoll）**
+
+2. 请求的完整过程：
+
+3. 1. 建立连接
+   2. 读取请求：解析请求
+   3. 处理请求
+   4. 响应请求
+
+4. 请求的完整过程，对应到底层，就是：读写 socket 事件
+

@@ -70,7 +70,7 @@ es 中的基本概念：**index、mapping、document、field**。（es在9.0版�
 
 es最强大的就是做**全文检索**
 
-1、客户端随机选择一个 **node** 发送索引数据请求，该 **node** 作为 **coordinating node**
+1、客户端随机选择一个 **node** 发送索引数据请求，该 **node** 作为 **coordinating node**协调节点
 
 2、**coordinating node** 将搜索请求转发到所有的 **shard** 对应的 **primary sahrd** 或者 **replica shard **，接下来分为两步来执行
 
@@ -79,8 +79,6 @@ es最强大的就是做**全文检索**
 4、**fetch phase**：接着由协调节点根据 **doc id** 去各个节点上拉取实际的 **document 数据**，最后返回给客户端。
 
 ### ==3.es在数据量很大（几亿级别）的情况下如何提高查询效率？==
-
-实际上来说，es性能优化是没有什么银蛋的。也就是不能通过调节参数来应对所有的性能慢的场景。需要一点点来分析：
 
 在海量数据的场景下，如何提升 es 的性能。（**主要就是 es 的底层实现原理的考查，针对底层实现原理来优化其中最重要的 filesystem cache**）
 
